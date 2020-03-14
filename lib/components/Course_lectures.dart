@@ -1,7 +1,7 @@
 import 'package:AUIS_classroom/components/Comment_card.dart';
 import 'package:AUIS_classroom/components/Video.dart';
 import 'package:AUIS_classroom/constants.dart';
-import 'package:AUIS_classroom/services/network.dart';
+import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

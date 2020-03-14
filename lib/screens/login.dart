@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:AUIS_classroom/services/network.dart';
+import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/screens/Home.dart';
 import 'package:AUIS_classroom/services/user.dart';
 import 'package:provider/provider.dart';
