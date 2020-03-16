@@ -19,17 +19,18 @@ class _LecturesState extends State<Lectures> {
   List<Video> lectures = [];
   List<Comment> comments = [];
   String comment;
+  TextEditingController _controller = TextEditingController();
 
-  void addComments() {
-    for (var i = 0; i < widget.data['commentcount']; i++) {
-      comments.add(Comment(widget.data['comments'][i]['studentId'],
-          widget.data['comments'][i]['comment']));
+  void addComments(var data) {
+    for (var i = 0; i < data['commentcount']; i++) {
+      comments.add(Comment(
+          data['comments'][i]['studentId'], data['comments'][i]['comment']));
     }
   }
 
-  void addLectures() {
-    for (var i = 0; i < widget.data['vidcount']; i++) {
-      lectures.add(Video(widget.data['videos'][i]['path']));
+  void addLectures(var data) {
+    for (var i = 0; i < data['vidcount']; i++) {
+      lectures.add(Video(data['videos'][i]['path']));
     }
   }
 
@@ -37,20 +38,20 @@ class _LecturesState extends State<Lectures> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    addLectures();
-    addComments();
+    addLectures(widget.data);
+    addComments(widget.data);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: <Widget>[
           Container(
             margin: EdgeInsets.all(30),
             child: AspectRatio(
-              aspectRatio: 1.8,
+              aspectRatio: 1.9,
               child: ListView.builder(
                 itemCount: lectures.length,
                 itemBuilder: (context, index) {
@@ -94,28 +95,32 @@ class _LecturesState extends State<Lectures> {
               return comments[index];
             },
           )),
-          SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: TextFormField(
-                onChanged: (value) => comment = value,
-                style: TextStyle(color: Colors.white),
-                decoration: kdecorateInput(
-                  hint: "Add a comment",
-                  suffix: FlatButton(
-                    onPressed: () {
-                      // send the comment here
-                      setState(() {
-                        Network.comment(
-                            Provider.of<User>(context, listen: false).id,
-                            widget.courseId,
-                            comment);
-                      });
-                    },
-                    child: Icon(
-                      Icons.send,
-                      color: KBlue,
-                    ),
+          // add a comment
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: TextFormField(
+              autocorrect: false,
+              controller: _controller,
+              onChanged: (value) => comment = value,
+              // style: TextStyle(color: Colors.white),
+              decoration: kdecorateInput(
+                hint: "Add a comment",
+                suffix: FlatButton(
+                  onPressed: () {
+                    // send the comment here
+                    setState(() async {
+                      Network.comment(
+                          Provider.of<User>(context, listen: false).id,
+                          widget.courseId,
+                          comment);
+                      // var lectures = await Network.getCourseLecture(widget.courseId);
+                      // addComments(lectures);
+                      _controller.clear();
+                    });
+                  },
+                  child: Icon(
+                    Icons.send,
+                    color: KBlue,
                   ),
                 ),
               ),

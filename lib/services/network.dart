@@ -2,9 +2,10 @@ import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-final url = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
+final url =  "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 
 Future _send(String link) async {
+  print(link);
   try {
     http.Response response = await http.get(link);
     if (response.statusCode == 200) {
@@ -19,9 +20,13 @@ Future _send(String link) async {
   }
 }
 
+void review(String review, String courseId, String studentId){
+  String link = url + 'review&studentId=' + studentId + '&courseId=' + _fix(courseId) + '&review='+review;
+  _send(link);
+}
+
 Future getReviews(String courseId) {
   String link = url + 'getReviews&courseId=' + _fix(courseId);
-  print(link);
   return _send(link);
 }
 
@@ -85,18 +90,11 @@ void comment(String studentId, String courseId, String comment) {
 // use post and a different php file
 Future<String> register(String id, String fname, String lname, String email,
     String password) async {
-  String link = url +
-      "register&id=" +
-      id +
-      "&fname=" +
-      fname +
-      "&lname=" +
-      lname +
-      "&email=" +
+  String link = url + "register&id=" +id + "&fname=" +fname +"&lname=" +lname +"&email=" +
       email +
       "&password=" +
       password;
-  print(link);
+  
   return _send(link);
 }
 

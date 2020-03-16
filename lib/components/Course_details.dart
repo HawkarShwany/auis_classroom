@@ -18,14 +18,16 @@ class Details extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         
       ),
-      child: Column(
-        children: <Widget>[
-          Text(data['CourseId']),
-          Text(data['CourseName']),
-          Text(data['Credits']),
-          Text(data['Prerequisites']),
-          Text(data['Discription']),
-        ],
+      child: SingleChildScrollView(
+              child: Column(
+          children: <Widget>[
+            Text(data['CourseId']),
+            Text(data['CourseName']),
+            Text(data['Credits']),
+            Text(data['Prerequisites']),
+            Text(data['Discription']),
+          ],
+        ),
       ),
     );
   }

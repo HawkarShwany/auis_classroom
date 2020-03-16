@@ -13,6 +13,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _loginformKey = GlobalKey<FormState>();
+  final _registerformKey = GlobalKey<FormState>();
   String registerEmail;
   String registerPassword;
   String registerFname;
@@ -22,7 +24,7 @@ class _LoginState extends State<Login> {
   String loginPassword;
 
   void addUser(var data) {
-    print("adding data; "+data['id']);
+    print("adding data; " + data['id']);
     Provider.of<User>(context, listen: false).setId(data['id']);
     Provider.of<User>(context, listen: false).setFname(data['fname']);
     Provider.of<User>(context, listen: false).setLname(data['lname']);
@@ -30,32 +32,51 @@ class _LoginState extends State<Login> {
     Provider.of<User>(context, listen: false).setPassword(data['password']);
   }
 
+  void login() async {
+    var response = await Network.login(loginId, loginPassword);
+    print(response);
+    if (response['data'].toString() == 'correct') {
+      print("in login screen:" + response['fname']);
+      addUser(response);
+      // Navigator.pushNamed(context, HomeScreen.id);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
+    } else {
+      print("cant proceed");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  "AUIS Classroom",
-                  style: TextStyle(color: Colors.white, fontSize: 30),
+        resizeToAvoidBottomInset: true,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Flexible(
+              child: Text(
+                "AUIS Classroom",
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              ),
+            ),
+
+            // the box of inputs
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: KSecondaryColor,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
                 ),
               ),
-
-              // the box of inputs
-              Container(
-                margin: EdgeInsets.all(30),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: KSecondaryColor,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
+              child: Form(
+                key: _loginformKey,
                 child: Column(
                   children: <Widget>[
                     Text(
@@ -65,8 +86,15 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       height: 30,
                     ),
-                    TextField(
-                      decoration: KEmailInput,
+                    TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return '* Please enter text here';
+                        }
+
+                        return null;
+                      },
+                      decoration: kdecorateInput(hint: 'ID'),
                       enableSuggestions: true,
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.emailAddress,
@@ -78,8 +106,15 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       height: 30,
                     ),
-                    TextField(
-                      decoration: KPasswordInput,
+                    TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return '* Please enter text here';
+                        }
+
+                        return null;
+                      },
+                      decoration: kdecorateInput(hint: 'Password'),
                       enableSuggestions: true,
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.visiblePassword,
@@ -91,131 +126,189 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       height: 30,
                     ),
-                    RaisedButton(
-                      child: Text(
-                        "login",
-                        style: KPillTextStyle,
-                      ),
-                      onPressed: () async {
-                        var response =
-                            await Network.login(loginId, loginPassword);
-                        if (response['data'].toString() == 'correct') {
-                          print("in login screen:"+ response['fname']);
-                          addUser(response);
-                          // Navigator.pushNamed(context, HomeScreen.id);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
-                          );
-                        }else{
-                          print("cant proceed");
-                        }
-                      },
-                    ),
-                    Text(
-                      'or',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    RaisedButton(
-                      child: Text(
-                        "register",
-                        style: KPillTextStyle,
-                      ),
-                      onPressed: () {
-                        Alert(
-                          context: context,
-                          title: "Register",
-                          style: AlertStyle(
-                              backgroundColor: KSecondaryColor,
-                              titleStyle: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              )),
-                          content: Column(
-                            children: <Widget>[
-                              TextField(
-                                keyboardType: TextInputType.text,
-                                decoration: KEmailInput,
-                                enableSuggestions: true,
-                                textAlign: TextAlign.center,
-                                autofocus: false,
-                                onChanged: (value) {
-                                  registerId = value;
-                                },
-                              ),
-                              TextField(
-                                keyboardType: TextInputType.text,
-                                decoration: KEmailInput,
-                                enableSuggestions: true,
-                                textAlign: TextAlign.center,
-                                autofocus: false,
-                                onChanged: (value) {
-                                  registerFname = value;
-                                },
-                              ),
-                              TextField(
-                                keyboardType: TextInputType.text,
-                                decoration: KEmailInput,
-                                enableSuggestions: true,
-                                textAlign: TextAlign.center,
-                                autofocus: false,
-                                onChanged: (value) {
-                                  registerLname = value;
-                                },
-                              ),
-                              TextField(
-                                decoration: KEmailInput,
-                                enableSuggestions: true,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.emailAddress,
-                                autofocus: false,
-                                onChanged: (value) {
-                                  registerEmail = value;
-                                },
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              TextField(
-                                decoration: KPasswordInput,
-                                enableSuggestions: true,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.visiblePassword,
-                                autofocus: false,
-                                onChanged: (value) {
-                                  registerPassword = value;
-                                },
-                              ),
-                              RaisedButton(
-                                onPressed: () async {
-                                  var response = await Network.register(
-                                      registerId,
-                                      registerFname,
-                                      registerLname,
-                                      registerEmail,
-                                      registerPassword);
-                                  if (response == 'true') {
-                                    print(response);
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                child: Text(
-                                  "register",
-                                  style: KPillTextStyle,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        RaisedButton(
+                          child: Text(
+                            "login",
+                            style: KPillTextStyle,
+                          ),
+                          onPressed: () async {
+                            if (_loginformKey.currentState.validate()) {
+                              login();
+                            }
+                          },
+                        ),
+                        Text(
+                          'or',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        RaisedButton(
+                          child: Text(
+                            "register",
+                            style: KPillTextStyle,
+                          ),
+                          onPressed: () {
+                            Alert(
+                              context: context,
+                              title: "Register",
+                              style: AlertStyle(
+                                  backgroundColor: KSecondaryColor,
+                                  titleStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  )),
+                              content: Form(
+                                key: _registerformKey,
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // id
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return '* Required';
+                                        }
+                                        return null;
+                                      },
+                                      keyboardType: TextInputType.text,
+                                      decoration: kdecorateInput(hint: 'ID'),
+                                      enableSuggestions: true,
+                                      textAlign: TextAlign.center,
+                                      autofocus: false,
+                                      onChanged: (value) {
+                                        registerId = value;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // first name
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return '* Required';
+                                        }
+                                        return null;
+                                      },
+                                      keyboardType: TextInputType.text,
+                                      decoration:
+                                          kdecorateInput(hint: 'First Name'),
+                                      enableSuggestions: true,
+                                      textAlign: TextAlign.center,
+                                      autofocus: false,
+                                      onChanged: (value) {
+                                        registerFname = value;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // last name
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return '* Required';
+                                        }
+                                        return null;
+                                      },
+                                      keyboardType: TextInputType.text,
+                                      decoration:
+                                          kdecorateInput(hint: 'Last Name'),
+                                      enableSuggestions: true,
+                                      textAlign: TextAlign.center,
+                                      autofocus: false,
+                                      onChanged: (value) {
+                                        registerLname = value;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // email
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return '* Required';
+                                        }
+                                        Pattern pattern =
+                                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                        RegExp regex = new RegExp(pattern);
+                                        // if (!regex.hasMatch(value))
+                                        //   return 'Enter Valid Email';
+
+                                        return null;
+                                      },
+                                      decoration: kdecorateInput(hint: "Email"),
+                                      enableSuggestions: true,
+                                      textAlign: TextAlign.center,
+                                      keyboardType: TextInputType.emailAddress,
+                                      autofocus: false,
+                                      onChanged: (value) {
+                                        registerEmail = value;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    // password
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return '* Required';
+                                        } else if (value.length < 6) {
+                                          return 'Password must be more than 5 charachters';
+                                        }
+                                        return null;
+                                      },
+                                      decoration:
+                                          kdecorateInput(hint: 'Password'),
+                                      enableSuggestions: true,
+                                      textAlign: TextAlign.center,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      autofocus: false,
+                                      onChanged: (value) {
+                                        registerPassword = value;
+                                      },
+                                    ),
+                                    RaisedButton(
+                                      onPressed: () async {
+                                        if (_registerformKey.currentState
+                                            .validate()) {
+                                          var response = await Network.register(
+                                              registerId,
+                                              registerFname,
+                                              registerLname,
+                                              registerEmail,
+                                              registerPassword);
+                                          if (response == 'true') {
+                                            print(response);
+                                            Navigator.pop(context);
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        "register",
+                                        style: KPillTextStyle,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ).show();
-                      },
+                            ).show();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

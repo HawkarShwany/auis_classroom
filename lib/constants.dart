@@ -14,40 +14,15 @@ const KPillTextStyle = TextStyle(
   decoration: TextDecoration.none,
 );
 
-const KEmailInput = InputDecoration(
-  fillColor: Colors.white,
-  focusColor: Colors.white,
-  hintStyle: TextStyle(color: Colors.grey),
-  hintText: "ID",
-  border: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: Colors.white,
-    ),
-    borderRadius: BorderRadius.all(
-      Radius.circular(10),
-    ),
-  ),
-);
-
-const KPasswordInput = InputDecoration(
-  
-  fillColor: Colors.white,
-  focusColor: Colors.white,
-  hintStyle: TextStyle(color: Colors.grey),
-  hintText: "Password",
-  border: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: Colors.white,
-    ),
-    borderRadius: BorderRadius.all(
-      Radius.circular(10),
-    ),
-  ),
-);
-
-
 InputDecoration kdecorateInput({ @required String hint, Widget leadingIcon, Widget suffix}) {
   return InputDecoration(
+    focusedBorder:OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.white
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+    ) ,
+    hoverColor: Colors.white,
     focusColor: Colors.white,
     hintText: hint,
     hintStyle: TextStyle(
@@ -55,7 +30,13 @@ InputDecoration kdecorateInput({ @required String hint, Widget leadingIcon, Widg
     ),
     icon: leadingIcon,
     suffixIcon: suffix,
+    filled: true,
     fillColor: Colors.white,
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.red
+      ),
+    ),
     border: OutlineInputBorder(
       borderSide: BorderSide(
         color: Colors.white

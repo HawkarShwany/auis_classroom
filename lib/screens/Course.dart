@@ -8,6 +8,7 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class CourseScreen extends StatefulWidget {
@@ -22,12 +23,11 @@ class CourseScreen extends StatefulWidget {
 }
 
 class _CourseScreenState extends State<CourseScreen> {
-     
-
   @override
   Widget build(BuildContext context) {
-    
- 
+    // SystemChrome.setPreferredOrientations(
+    //   [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]
+    // );
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -48,13 +48,20 @@ class _CourseScreenState extends State<CourseScreen> {
                 Text('Reviews'),
               ]),
         ),
-        body: TabBarView(children: [
-          Details(widget.details),
-          Lectures(widget.lectures, widget.details['CourseId']),
-          Files(),
-          Reviews(widget.reviews),
-        ]),
-        bottomNavigationBar: CustmoBottomNavigationBar(isHome: false,isFav: false,),
+        body: Container(
+          child: TabBarView(
+            children: [
+              Details(widget.details),
+              Lectures(widget.lectures, widget.details['CourseId']),
+              Files(),
+              Reviews(widget.reviews, widget.details['CourseId']),
+            ],
+          ),
+        ),
+        bottomNavigationBar: CustmoBottomNavigationBar(
+          isHome: false,
+          isFav: false,
+        ),
       ),
     );
   }
