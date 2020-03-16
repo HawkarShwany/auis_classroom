@@ -8,4 +8,4 @@ both the PHP file and database are still on my local machine. if you want to see
 
 here is an interactive version from figma
 
-<iframe style="border: none;" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FwOGyqNLG8wekl15hKyaXwA%2Fcapstone%3Fnode-id%3D48%253A0%26scaling%3Dscale-down" allowfullscreen></iframe>
+https://www.figma.com/proto/wOGyqNLG8wekl15hKyaXwA/capstone?node-id=48%3A0&scaling=scale-down
