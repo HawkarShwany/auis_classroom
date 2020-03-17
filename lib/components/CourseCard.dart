@@ -6,9 +6,10 @@ import 'package:AUIS_classroom/constants.dart';
 import 'package:provider/provider.dart';
 
 class CourseCard extends StatefulWidget {
-  CourseCard({this.courseID, this.courseTitle, this.isFav = false});
+  CourseCard({this.courseID, this.courseTitle, this.updateFavScreen, this.isFav = false});
   String courseID;
   String courseTitle;
+  Function updateFavScreen;
   bool isFav;
   @override
   _CourseCardState createState() => _CourseCardState();
@@ -105,6 +106,7 @@ class _CourseCardState extends State<CourseCard> {
                     : KPrimaryColor;
                     if (heartIconColor == KPrimaryColor) {
                       Network.unmarkFav(Provider.of<User>(context, listen: false).id ,widget.courseID);
+                      widget.updateFavScreen();
                     }else{
                       Network.markFav(Provider.of<User>(context, listen: false).id ,widget.courseID);
                     }

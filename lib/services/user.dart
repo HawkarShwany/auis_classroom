@@ -6,6 +6,7 @@ class User extends ChangeNotifier {
   String lname ;
   String email;
   String password ;
+  bool isAdmin;
 
   void setId(String id) {
     this.id = id;
@@ -32,6 +33,9 @@ class User extends ChangeNotifier {
   void setPassword(String password) {
     this.password = password;
     notifyListeners();
+  }
+  void admin(bool isAdmin){
+    this.isAdmin = isAdmin;
   }
 
 }
