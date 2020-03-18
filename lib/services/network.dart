@@ -5,27 +5,14 @@ import 'dart:convert';
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
 
+
+
+// add socketExeption
+
 Future _send(String link) async {
   print('from network: ' + link);
   try {
     http.Response response = await http.get(link);
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      // print( "frome network: "+data['data'].toString());
-      // print('data from network: '+data.toString());
-      return data;
-    } else {
-      print(response.statusCode);
-    }
-  } catch (e) {
-    print(e);
-  }
-}
-
-Future _post(String link) async {
-  print('from network: ' + link);
-  try {
-    http.Response response = await http.post(link);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       // print( "frome network: "+data['data'].toString());

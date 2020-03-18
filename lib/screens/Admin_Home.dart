@@ -75,11 +75,12 @@ class _HomeScreenState extends State<AdminHomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add, color: KPrimaryColor,),
-        onPressed: () {
-          Navigator.pushNamed(context, AddCourseScreen.id);
-        },
-      ),
+        heroTag: 'AddCourse',
+          child: Icon(Icons.add, color: KPrimaryColor,),
+          onPressed: () {
+            Navigator.pushNamed(context, AddCourseScreen.id);
+          },
+        ),
     );
   }
 }

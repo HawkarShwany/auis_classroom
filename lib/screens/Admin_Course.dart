@@ -31,6 +31,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           resizeToAvoidBottomInset: false,
           drawer: Drawer(),
           appBar: AppBar(
+            automaticallyImplyLeading: true,
             centerTitle: true,
             title: Text("Admin"),
             bottom: TabBar(
