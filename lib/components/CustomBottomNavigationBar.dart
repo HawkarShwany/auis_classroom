@@ -5,6 +5,8 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:AUIS_classroom/services/routing.dart';
+
 
 class CustmoBottomNavigationBar extends StatelessWidget {
   CustmoBottomNavigationBar({@required this.isHome, @required this.isFav}) {
@@ -33,24 +35,14 @@ class CustmoBottomNavigationBar extends StatelessWidget {
         children: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
-                ),
-              );
+              Navigator.pushNamed(context, HomeScreen.id);
             },
             child: Icon(Icons.home, color: homeIconColor),
           ),
           FlatButton(
             onPressed: ()async {
-              var response = await Network.getFav(Provider.of<User>(context, listen: false).id);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FavoriteCourseScreen(response),
-                ),
-              );
+              var response = await Network.getFav(Provider.of<User>(context, listen: false).id); 
+              Navigator.pushNamed(context, FavoriteCourseScreen.id, arguments: response);
             },
             child: Icon(
               Icons.favorite,

@@ -8,7 +8,7 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  static String id = '/login';
+  static const String id = '/login';
   @override
   _LoginState createState() => _LoginState();
 }
@@ -220,7 +220,7 @@ class _LoginState extends State<Login> {
                 enableSuggestions: true,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
-                autofocus: false,
+                autofocus: true,
                 onChanged: (value) {
                   adminemail = value;
                 },

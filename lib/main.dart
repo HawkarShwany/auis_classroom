@@ -1,5 +1,9 @@
+import 'package:AUIS_classroom/screens/Admin_AddCourse.dart';
+import 'package:AUIS_classroom/screens/Admin_Home.dart';
+import 'package:AUIS_classroom/screens/FavoriteScreen.dart';
 import 'package:AUIS_classroom/screens/Home.dart';
 import 'package:AUIS_classroom/screens/login.dart';
+import 'package:AUIS_classroom/services/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +25,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: KBlue,
+          ),
           textTheme: TextTheme(
             bodyText1: TextStyle(color: Colors.white, ),
             bodyText2: TextStyle(color: Colors.white,),
@@ -39,12 +46,9 @@ class MyApp extends StatelessWidget {
           backgroundColor: KPrimaryColor,
           scaffoldBackgroundColor: KPrimaryColor,
         ),
-        home: Login(),
-        // routes: {
-        //   HomeScreen.id: (context) => HomeScreen(),
-        //   Login.id: (context) => Login(),
-        //   CourseScreen.id: (context) => CourseScreen(),
-        // },
+        initialRoute: Login.id,
+        onGenerateRoute: generateRoute,
+        
       ),
     );
   }

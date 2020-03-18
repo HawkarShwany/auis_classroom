@@ -1,29 +1,29 @@
+import 'package:AUIS_classroom/components/Admin_CourseCard.dart';
 import 'package:AUIS_classroom/components/Departments.dart';
+import 'package:AUIS_classroom/constants.dart';
+import 'package:AUIS_classroom/screens/Admin_AddCourse.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
-import 'package:AUIS_classroom/components/CustomBottomNavigationBar.dart';
 import 'package:AUIS_classroom/components/Dep.dart';
-import 'package:AUIS_classroom/components/CourseCard.dart';
 import 'package:provider/provider.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  
-  static String id = '/AdminHome';
+  static const String id = '/AdminHome';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<AdminHomeScreen> {
   Dep selectedDep = Dep.CORE;
-  List<CourseCard> courses = [];
+  List<AdminCourseCard> courses = [];
   var response;
   // var user = Provider.of<User>(context);
 
   void convert(dynamic data) {
-    courses.removeRange(0, courses.length );
+    courses.removeRange(0, courses.length);
     for (int i = 0; i < data['count']; i++) {
-      courses.add(CourseCard(
+      courses.add(AdminCourseCard(
         courseID: data['data'][i]['CourseId'],
         courseTitle: data['data'][i]['CourseName'],
       ));
@@ -31,10 +31,10 @@ class _HomeScreenState extends State<AdminHomeScreen> {
   }
 
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
-   selectDep(selectedDep);
+    selectDep(selectedDep);
   }
 
   void selectDep(Dep dep) async {
@@ -49,18 +49,12 @@ class _HomeScreenState extends State<AdminHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(),
-      appBar: AppBar(
-        leading: GestureDetector(
-            onTap: () {
-              Scaffold.of(context).openDrawer();
-            },
-            child: Icon(Icons.menu)),
-      ),
+      appBar: AppBar(),
       body: Column(
         children: <Widget>[
           Consumer<User>(
             builder: (context, user, child) => Text(
-              user.fname + ' '+user.lname,
+              user.fname + ' ' + user.lname,
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -80,7 +74,12 @@ class _HomeScreenState extends State<AdminHomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: CustmoBottomNavigationBar(isHome: true, isFav: false,),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: KPrimaryColor,),
+        onPressed: () {
+          Navigator.pushNamed(context, AddCourseScreen.id);
+        },
+      ),
     );
   }
 }

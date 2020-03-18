@@ -3,16 +3,12 @@ import 'package:AUIS_classroom/components/Course_files.dart';
 import 'package:AUIS_classroom/components/Course_lectures.dart';
 import 'package:AUIS_classroom/components/Course_reviews.dart';
 import 'package:AUIS_classroom/components/CustomBottomNavigationBar.dart';
-import 'package:AUIS_classroom/services/network.dart';
-import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class CourseScreen extends StatefulWidget {
-  static String id = '/course';
+  static const String id = '/course';
   final details;
   final lectures;
   final files;

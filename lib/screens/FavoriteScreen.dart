@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteCourseScreen extends StatefulWidget {
+  static const String id = '/favoriteScreen';
   FavoriteCourseScreen(this.data);
   final data;
   @override
