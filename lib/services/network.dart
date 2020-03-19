@@ -1,11 +1,10 @@
 import 'package:AUIS_classroom/components/Dep.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
-
-
 
 // add socketExeption
 
@@ -24,6 +23,29 @@ Future _send(String link) async {
   } catch (e) {
     print(e);
   }
+}
+
+void addCourse(
+    {@required String courseId,
+    @required String courseTitle,
+    @required String courseDesc,
+    @required String prerequisites,
+    @required String department,
+    @required int credits}) {
+  String link = getUrl +
+      'addCourse&courseId=' +
+      _fix(courseId) +
+      '&courseTitle=' +
+      _fix(courseTitle) +
+      '&courseDesc=' +
+      _fix(courseDesc) +
+      '&department=' +
+      department +
+      '&pre='+ _fix(prerequisites)+
+      '&credits=' +
+      credits.toString();
+  print(courseDesc);
+  _send(link);
 }
 
 void review(String review, String courseId, String studentId) {
@@ -69,8 +91,18 @@ Future getCourseDetail(String courseId) async {
 }
 
 String _fix(String text) {
-  List<String> id = text.split(" ");
-  return id[0] + '%20' + id[1];
+  String fixedText = '';
+  if (text != null) {
+    List<String> strings = text.split(" ");
+
+    for (var i = 0; i < strings.length; i++) {
+      fixedText += strings[i];
+      fixedText += '%20';
+    }
+    return fixedText;
+  }
+
+  return null;
 }
 
 Future getCourseLecture(String courseId) async {

@@ -3,15 +3,16 @@ import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/components/Dep.dart';
 
-class AddCourseScreen extends StatefulWidget {
-  static const String id = '/AddCourse';
+class AdminDetails extends StatefulWidget {
+  static const String id = '/AdminDetails';
+  dynamic data;
+  AdminDetails(this.data);
 
   @override
-  _AddCourseScreenState createState() => _AddCourseScreenState();
+  _AdminDetailsState createState() => _AdminDetailsState();
 }
 
-class _AddCourseScreenState extends State<AddCourseScreen> {
-  TextEditingController _controller = TextEditingController();
+class _AdminDetailsState extends State<AdminDetails> {
   List<DropdownMenuItem<Dep>> departments = [
     DropdownMenuItem(
       value: Dep.CORE,
@@ -58,25 +59,50 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   ];
   int credits = 3;
 
-  String courseId = '';
+  String courseId;
 
-  String courseTitle = '';
+  String courseTitle;
 
-  String courseDescription = '';
+  String courseDescription;
 
-  Dep department = Dep.CORE;
+  Dep department;
 
-  String prerequisites = '';
+  String prerequisites;
+
+  Dep getDep(dynamic dep) {
+    switch (dep) {
+      case '2':
+        return Dep.CORE;
+      case '3':
+        return Dep.BUS;
+      case '1':
+        return Dep.IT;
+      case '4':
+        return Dep.ENGR;
+      case '5':
+        return Dep.IS;
+      default:
+        return null;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    courseId = widget.data['CourseId'];
+    courseTitle = widget.data['CourseName'];
+    courseDescription = widget.data['Discription'];
+    department = getDep(widget.data['DepId']);
+    prerequisites = widget.data['Prerequisites'] == null
+        ? ''
+        : widget.data['Prerequisites'];
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          centerTitle: true,
-          title: Text("Add a new course"),
-        ),
         body: Container(
           margin: EdgeInsets.all(30),
           child: SingleChildScrollView(
@@ -91,6 +117,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   TextFormField(
                     textCapitalization: TextCapitalization.characters,
                     enableSuggestions: true,
+                    initialValue: courseId,
                     // controller: _controller,
                     decoration: kdecorateInput(
                       hint: 'Course ID',
@@ -102,6 +129,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   TextFormField(
+                    initialValue: courseTitle,
                     enableSuggestions: true,
                     // controller: _controller,
                     decoration: kdecorateInput(
@@ -114,6 +142,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   TextFormField(
+                    initialValue: courseDescription,
                     // expands: true,
                     minLines: 1,
                     maxLines: 20,
@@ -129,6 +158,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   TextFormField(
+                    initialValue: prerequisites,
                     enableSuggestions: true,
                     // controller: _controller,
                     decoration: kdecorateInput(
@@ -143,15 +173,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   Container(
                     width: 250,
                     child: DropdownButtonFormField(
-                        value: department,
-                        decoration: kdecorateInput(hint: null),
-                      
-                        items: departments,
-                        onChanged: (dynamic value) {
-                          setState(() {
-                            department = value;
-                          });
-                        }),
+                      decoration: kdecorateInput(hint: null),
+                      value: department,
+                      items: departments,
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          department = value;
+                        });
+                      },
+                    ),
                   ),
                   Text(
                     "Credits",
@@ -160,15 +190,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   Container(
                     width: 80,
                     child: DropdownButtonFormField(
-                        value: credits,
-                        decoration: kdecorateInput(hint: null),
-                        
-                        items: creditItems,
-                        onChanged: (int value) {
-                          setState(() {
-                            credits = value;
-                          });
-                        }),
+                      value: credits,
+                      decoration: kdecorateInput(hint: null).copyWith(),
+                      items: creditItems,
+                      onChanged: (int value) {
+                        setState(() {
+                          credits = value;
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -178,18 +208,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
         floatingActionButton: FloatingActionButton(
             heroTag: 'AddCourse',
             child: Icon(
-              Icons.add,
+              Icons.done,
               color: KPrimaryColor,
             ),
             onPressed: () {
-              Network.addCourse(
-                courseId: courseId,
-                courseTitle: courseTitle,
-                courseDesc: courseDescription,
-                prerequisites: prerequisites,
-                department: department.toString(),
-                credits: credits,
-              );
+              // update the course here
+              
             }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

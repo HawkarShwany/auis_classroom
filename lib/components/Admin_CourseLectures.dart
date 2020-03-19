@@ -1,4 +1,3 @@
-import 'package:AUIS_classroom/components/Comment_card.dart';
 import 'package:AUIS_classroom/components/Video.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
@@ -6,24 +5,26 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Lectures extends StatefulWidget {
+import 'Admin_CommentCard.dart';
+
+class AdminLectures extends StatefulWidget {
   final data;
   final courseId;
-  Lectures(this.data, this.courseId);
+  AdminLectures(this.data, this.courseId);
 
   @override
   _LecturesState createState() => _LecturesState();
 }
 
-class _LecturesState extends State<Lectures> {
+class _LecturesState extends State<AdminLectures> {
   List<Video> lectures = [];
-  List<Comment> comments = [];
+  List<AdminComment> comments = [];
   String comment;
   TextEditingController _controller = TextEditingController();
 
   void addComments(var data) {
     for (var i = 0; i < data['commentcount']; i++) {
-      comments.add(Comment(
+      comments.add(AdminComment(
           data['comments'][i]['studentId'], data['comments'][i]['comment']));
     }
   }
@@ -75,6 +76,11 @@ class _LecturesState extends State<Lectures> {
                 scrollDirection: Axis.horizontal,
               ),
             ),
+          ),
+          RaisedButton(
+            color: KBlue,
+            onPressed: () {},
+            child: Text("Add a Video", style: TextStyle(color: Colors.white),),
           ),
           Container(
             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),

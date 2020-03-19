@@ -3,12 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/components/Dep.dart';
 
 
-// enum Dep {
-//   CORE,
-//   BUS,
-//   IT,
-//   ENGR,
-// }
+
 
 class Departments extends StatelessWidget {
   Departments({this.selectDep, this.selectedDep});
@@ -54,6 +49,15 @@ class Departments extends StatelessWidget {
                 // selectedDep = Dep.ENGR;
               },
             ),
+            Pill(
+              isActive: selectedDep == Dep.IS ? true : false,
+              text: "International Studies",
+              onTap: () {
+                selectDep(Dep.IS);
+                // selectedDep = Dep.ENGR;
+              },
+            ),
+            
           ],
         ),
       ),

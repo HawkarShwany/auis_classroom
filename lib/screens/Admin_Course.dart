@@ -1,8 +1,8 @@
-import 'package:AUIS_classroom/components/Course_details.dart';
+import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
+import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
 import 'package:AUIS_classroom/components/Course_files.dart';
 import 'package:AUIS_classroom/components/Course_lectures.dart';
 import 'package:AUIS_classroom/components/Course_reviews.dart';
-import 'package:AUIS_classroom/components/CustomBottomNavigationBar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
@@ -51,8 +51,8 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           body: Container(
             child: TabBarView(
               children: [
-                Details(widget.details),
-                Lectures(widget.lectures, widget.details['CourseId']),
+                AdminDetails(widget.details),
+                AdminLectures(widget.lectures, widget.details['CourseId']),
                 Files(),
                 Reviews(widget.reviews, widget.details['CourseId']),
               ],
