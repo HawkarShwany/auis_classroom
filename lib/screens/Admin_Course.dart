@@ -1,8 +1,7 @@
 import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
 import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
+import 'package:AUIS_classroom/components/Admin_CourseReview.dart';
 import 'package:AUIS_classroom/components/Course_files.dart';
-import 'package:AUIS_classroom/components/Course_lectures.dart';
-import 'package:AUIS_classroom/components/Course_reviews.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
@@ -33,7 +32,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: true,
             centerTitle: true,
-            title: Text("Admin"),
+            title: Text(widget.details['CourseId']),
             bottom: TabBar(
                 isScrollable: true,
                 labelColor: KBlue,
@@ -54,7 +53,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
                 AdminDetails(widget.details),
                 AdminLectures(widget.lectures, widget.details['CourseId']),
                 Files(),
-                Reviews(widget.reviews, widget.details['CourseId']),
+                AdminReviews(widget.reviews, widget.details['CourseId']),
               ],
             ),
           ),

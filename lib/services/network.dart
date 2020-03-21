@@ -41,10 +41,39 @@ void addCourse(
       _fix(courseDesc) +
       '&department=' +
       department +
-      '&pre='+ _fix(prerequisites)+
+      '&pre=' +
+      _fix(prerequisites) +
       '&credits=' +
       credits.toString();
   print(courseDesc);
+  _send(link);
+}
+
+void addFile(String title, String url, String courseId, String type) {
+  String link = getUrl + 'addFile&title=' + title + '&url=' + url+
+      '&courseId=' +
+      courseId +
+      '&type=' +
+      type;
+  _send(link);
+}
+
+void addYouTubeVideo(String title, String url, String courseId) {
+  addFile(_fix(title), url, _fix(courseId), 'video');
+}
+
+void deleteVideo(dynamic videoId) {
+  String link = getUrl + 'deleteVideo&id=' + videoId.toString();
+  _send(link);
+}
+
+void deleteReivew(dynamic reviewId){
+  String link = getUrl + 'deleteReview&id=' + reviewId.toString();
+  _send(link);
+}
+
+void deleteComment(dynamic commentId) {
+  String link = getUrl + 'deleteComment&id=' + commentId.toString();
   _send(link);
 }
 

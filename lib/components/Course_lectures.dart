@@ -20,6 +20,7 @@ class _LecturesState extends State<Lectures> {
   List<Comment> comments = [];
   String comment;
   TextEditingController _controller = TextEditingController();
+  int index = 0;
 
   void addComments(var data) {
     for (var i = 0; i < data['commentcount']; i++) {
@@ -28,9 +29,15 @@ class _LecturesState extends State<Lectures> {
     }
   }
 
+  void nothing() {}
   void addLectures(var data) {
     for (var i = 0; i < data['vidcount']; i++) {
-      lectures.add(Video(data['videos'][i]['path']));
+      lectures.add(
+        Video(
+          data['videos'][i]['path'],
+          data['videos'][i]['id'],
+        ),
+      );
     }
   }
 
@@ -49,31 +56,54 @@ class _LecturesState extends State<Lectures> {
       body: Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.all(30),
+            margin: EdgeInsets.only(left: 30, right: 30, top: 30),
             child: AspectRatio(
-              aspectRatio: 1.9,
-              child: ListView.builder(
-                itemCount: lectures.length,
-                itemBuilder: (context, index) {
-                  // if there is no lecture
-                  if (lectures.length == 0) {
-                    print(lectures.length);
-                    return Center(
-                        child: Text(
-                      "No lecture available at the moment",
-                      style: TextStyle(color: Colors.white),
-                    ));
-                  } else {
-                    print(lectures.length);
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      child: lectures[index],
-                    );
-                  }
-                },
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
+              aspectRatio: 16 / 9,
+              child: IndexedStack(
+                index: index,
+                children: lectures,
               ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (index == 0) {
+                        index = lectures.length - 1;
+                      } else {
+                        index--;
+                      }
+                    });
+                  },
+                  child: Icon(
+                    Icons.arrow_left,
+                    size: 35,
+                    color: KBlue,
+                  ),
+                ),
+                Text((index + 1).toString() + "/" + lectures.length.toString()),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (index == lectures.length - 1) {
+                        index = 0;
+                      } else {
+                        index++;
+                      }
+                    });
+                  },
+                  child: Icon(
+                    Icons.arrow_right,
+                    size: 35,
+                    color: KBlue,
+                  ),
+                ),
+              ],
             ),
           ),
           Container(

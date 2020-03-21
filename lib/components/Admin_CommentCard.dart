@@ -4,7 +4,9 @@ import 'package:AUIS_classroom/constants.dart';
 class AdminComment extends StatelessWidget {
   final name;
   final text;
-  AdminComment(this.name, this.text);
+  final commentId;
+  Function deleteComment;
+  AdminComment(this.name, this.text, this.commentId, this.deleteComment);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +38,13 @@ class AdminComment extends StatelessWidget {
             ],
           ),
           FlatButton(
-            onPressed: () {},
-            child: Icon(Icons.delete_forever, color: KPrimaryColor,),
+            onPressed: () {
+              deleteComment(commentId);
+            },
+            child: Icon(
+              Icons.delete_forever,
+              color: KPrimaryColor,
+            ),
           ),
         ],
       ),
