@@ -22,7 +22,7 @@ class _LecturesState extends State<AdminLectures> {
   List<AdminComment> comments = [];
   String comment;
   TextEditingController _controller = TextEditingController();
-  int index = 0;
+  int index;
 
   void deleteComment(dynamic commentId) {
     Network.deleteComment(commentId);
@@ -107,6 +107,7 @@ class _LecturesState extends State<AdminLectures> {
     super.initState();
     addLectures(widget.data);
     addComments(widget.data);
+    index = lectures.length > 0 ? 0 : -1;
   }
 
   @override
@@ -145,10 +146,12 @@ class _LecturesState extends State<AdminLectures> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (index == 0) {
-                        index = lectures.length - 1;
-                      } else {
-                        index--;
+                      if (lectures.length > 0) {
+                        if (index == 0) {
+                          index = lectures.length - 1;
+                        } else {
+                          index--;
+                        }
                       }
                     });
                   },
@@ -162,10 +165,12 @@ class _LecturesState extends State<AdminLectures> {
                 GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (index == lectures.length - 1) {
-                          index = 0;
-                        } else {
-                          index++;
+                        if (lectures.length > 0) {
+                          if (index == lectures.length - 1) {
+                            index = 0;
+                          } else {
+                            index++;
+                          }
                         }
                       });
                     },

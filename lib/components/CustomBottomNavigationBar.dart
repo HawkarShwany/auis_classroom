@@ -7,7 +7,6 @@ import 'package:AUIS_classroom/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:AUIS_classroom/services/routing.dart';
 
-
 class CustmoBottomNavigationBar extends StatelessWidget {
   CustmoBottomNavigationBar({@required this.isHome, @required this.isFav}) {
     if (isHome) {
@@ -35,14 +34,21 @@ class CustmoBottomNavigationBar extends StatelessWidget {
         children: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, HomeScreen.id);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeScreen.id, (route) => false);
             },
             child: Icon(Icons.home, color: homeIconColor),
           ),
           FlatButton(
-            onPressed: ()async {
-              var response = await Network.getFav(Provider.of<User>(context, listen: false).id); 
-              Navigator.pushNamed(context, FavoriteCourseScreen.id, arguments: response);
+            onPressed: () async {
+              var response = await Network.getFav(
+                  Provider.of<User>(context, listen: false).id);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                FavoriteCourseScreen.id,
+                (route) => false,
+                arguments: response,
+              );
             },
             child: Icon(
               Icons.favorite,

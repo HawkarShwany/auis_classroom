@@ -6,6 +6,8 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'Custom_Drawer.dart';
+
 class Lectures extends StatefulWidget {
   final data;
   final courseId;
@@ -20,7 +22,7 @@ class _LecturesState extends State<Lectures> {
   List<Comment> comments = [];
   String comment;
   TextEditingController _controller = TextEditingController();
-  int index = 0;
+  int index ;
 
   void addComments(var data) {
     for (var i = 0; i < data['commentcount']; i++) {
@@ -47,12 +49,14 @@ class _LecturesState extends State<Lectures> {
     super.initState();
     addLectures(widget.data);
     addComments(widget.data);
+    index = lectures.length > 0 ? 0 : -1;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      
       body: Column(
         children: <Widget>[
           Container(
@@ -73,10 +77,12 @@ class _LecturesState extends State<Lectures> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (index == 0) {
-                        index = lectures.length - 1;
-                      } else {
-                        index--;
+                      if (lectures.length > 0) {
+                        if (index == 0) {
+                          index = lectures.length - 1;
+                        } else {
+                          index--;
+                        }
                       }
                     });
                   },
@@ -90,10 +96,12 @@ class _LecturesState extends State<Lectures> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (index == lectures.length - 1) {
-                        index = 0;
-                      } else {
-                        index++;
+                      if (lectures.length > 0) {
+                        if (index == lectures.length - 1) {
+                          index = 0;
+                        } else {
+                          index++;
+                        }
                       }
                     });
                   },

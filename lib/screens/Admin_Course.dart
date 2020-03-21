@@ -2,6 +2,7 @@ import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
 import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
 import 'package:AUIS_classroom/components/Admin_CourseReview.dart';
 import 'package:AUIS_classroom/components/Course_files.dart';
+import 'package:AUIS_classroom/components/Custom_Drawer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
@@ -28,7 +29,9 @@ class _CourseScreenState extends State<AdminCourseScreen> {
         length: 4,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          drawer: Drawer(),
+          drawer: Drawer(
+            child: CustomDrawer(),
+          ),
           appBar: AppBar(
             automaticallyImplyLeading: true,
             centerTitle: true,

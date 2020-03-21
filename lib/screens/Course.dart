@@ -3,6 +3,7 @@ import 'package:AUIS_classroom/components/Course_files.dart';
 import 'package:AUIS_classroom/components/Course_lectures.dart';
 import 'package:AUIS_classroom/components/Course_reviews.dart';
 import 'package:AUIS_classroom/components/CustomBottomNavigationBar.dart';
+import 'package:AUIS_classroom/components/Custom_Drawer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
@@ -28,7 +29,10 @@ class _CourseScreenState extends State<CourseScreen> {
       length: 4,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        drawer: Drawer(),
+        drawer: Drawer(
+        elevation: 10,
+        child: CustomDrawer(),
+      ),
         appBar: AppBar(
           bottom: TabBar(
               isScrollable: true,
