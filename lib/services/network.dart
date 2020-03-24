@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_uploader/flutter_uploader.dart';
 
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
@@ -14,8 +17,7 @@ Future _send(String link) async {
     http.Response response = await http.get(link);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      // print( "frome network: "+data['data'].toString());
-      // print('data from network: '+data.toString());
+
       return data;
     } else {
       print(response.statusCode);
@@ -25,6 +27,27 @@ Future _send(String link) async {
   }
 }
 
+Future updateCourse({@required String courseId,
+    @required String courseTitle,
+    @required String courseDesc,
+    @required String prerequisites,
+    @required String department,
+    @required int credits}){
+String link = getUrl +
+      'updateCourse&courseId=' +
+      _fix(courseId) +
+      '&courseTitle=' +
+      _fix(courseTitle) +
+      '&courseDesc=' +
+      _fix(courseDesc) +
+      '&department=' +
+      department +
+      '&pre=' +
+      _fix(prerequisites) +
+      '&credits=' +
+      credits.toString();
+      return _send(link);
+}
 void addCourse(
     {@required String courseId,
     @required String courseTitle,
@@ -49,17 +72,57 @@ void addCourse(
   _send(link);
 }
 
-void addFile(String title, String url, String courseId, String type) {
-  String link = getUrl + 'addFile&title=' + title + '&url=' + url+
-      '&courseId=' +
-      courseId +
-      '&type=' +
-      type;
-  _send(link);
+Future deleteFile(String id){
+  String link = getUrl + 'deleteFile&id='+id;
+  print(link);
+  return _send(link);
+}
+Future getFiles(String courseId){
+  String link = getUrl + 'getFiles&courseId=' + _fix(courseId);
+  return _send(link);
+}
+Future addFile(File file, String courseId)async {
+  try {
+    String fileString = base64Encode(file.readAsBytesSync());
+    print('trying............');
+    http.Response response = await http.post(
+    "http://192.168.1.9:8081/capstone/web/upload.php",
+    body: {
+      'action': 'uploadFile',
+      'file': fileString,
+      'name': file.path.split('/').last,
+      'courseId': courseId
+    },
+  );
+  print('somting going on');
+  
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    print(" file response:     "+data.toString());
+    return data;
+  }else{
+    print("bad response:       "+ response.statusCode.toString());
+    
+  }
+  
+  } catch (e) {
+    print('error : '+e.toString());
+    return {"response":"error file was not uploaded"};
+  }
+  
+  
 }
 
 void addYouTubeVideo(String title, String url, String courseId) {
-  addFile(_fix(title), url, _fix(courseId), 'video');
+  String link = getUrl +
+      'addVideo&title=' +
+      title +
+      '&url=' +
+      url +
+      '&courseId=' +
+      courseId +
+      '&type=video';
+  _send(link);
 }
 
 void deleteVideo(dynamic videoId) {
@@ -67,17 +130,17 @@ void deleteVideo(dynamic videoId) {
   _send(link);
 }
 
-void deleteReivew(dynamic reviewId){
+Future deleteReivew(dynamic reviewId) {
   String link = getUrl + 'deleteReview&id=' + reviewId.toString();
-  _send(link);
+  return _send(link);
 }
 
-void deleteComment(dynamic commentId) {
+Future deleteComment(dynamic commentId) {
   String link = getUrl + 'deleteComment&id=' + commentId.toString();
-  _send(link);
+  return _send(link);
 }
 
-void review(String review, String courseId, String studentId) {
+Future review(String review, String courseId, String studentId) {
   String link = getUrl +
       'review&studentId=' +
       studentId +
@@ -85,7 +148,7 @@ void review(String review, String courseId, String studentId) {
       _fix(courseId) +
       '&review=' +
       review;
-  _send(link);
+  return _send(link);
 }
 
 Future getReviews(String courseId) {

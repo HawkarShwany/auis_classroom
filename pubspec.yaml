@@ -29,6 +29,9 @@ dependencies:
   awsome_video_player: ^1.0.6
   youtube_player_flutter: ^6.1.0+4
   smooth_star_rating: 1.0.4+2
+  file_picker: ^1.5.0+2
+
+  flutter_uploader: ^1.2.0
 
 dev_dependencies:
   flutter_test:

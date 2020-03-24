@@ -21,10 +21,25 @@ class _ReviewsState extends State<Reviews> {
   List<Comment> reviews = [];
   String _review;
 
-  void addReviews() {
-    for (var i = 0; i < widget.data['reviewCount']; i++) {
-      reviews.add(Comment(widget.data['reviews'][i]['studentId'],
-          widget.data['reviews'][i]['review']));
+  void updateScreen(dynamic response) async {
+    if (response['response'] == 'added') {
+      var newReviews = await Network.getReviews(widget.courseId);
+      setState(() {
+        addReviews(newReviews);
+      });
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: KSecondaryColor,
+          content: Text(response['response']),
+        ),
+      );
+    }
+  }
+
+  void addReviews(dynamic data) {
+    for (var i = 0; i < data['reviewCount']; i++) {
+      reviews.add(Comment(
+          data['reviews'][i]['studentId'], data['reviews'][i]['review']));
     }
   }
 
@@ -32,7 +47,7 @@ class _ReviewsState extends State<Reviews> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    addReviews();
+    addReviews(widget.data);
     _rating = double.parse(widget.data['rate']);
     print(_rating);
     _numberOfVotes = widget.data['votes'];
@@ -91,10 +106,13 @@ class _ReviewsState extends State<Reviews> {
                 hint: "Add a Review",
                 suffix: FlatButton(
                   onPressed: () {
-                    setState(() {
-                      Network.review(_review, widget.courseId,
+                    setState(() async {
+                      var response = await Network.review(
+                          _review,
+                          widget.courseId,
                           Provider.of<User>(context, listen: false).id);
                       _controller.clear();
+                      updateScreen(response);
                     });
                   },
                   child: Icon(Icons.send, color: KBlue),

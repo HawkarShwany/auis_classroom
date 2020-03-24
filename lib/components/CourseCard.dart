@@ -71,6 +71,7 @@ class _CourseCardState extends State<CourseCard> {
                     var details = await Network.getCourseDetail(courseId);
                     var lectures = await Network.getCourseLecture(courseId);
                     var reviews = await Network.getReviews(courseId);
+                    var files = await Network.getFiles(courseId);
                     // Navigator.pushNamed(context, CourseScreen.id, arguments: CourseScreen(response));
                     Navigator.push(
                       context,
@@ -78,7 +79,7 @@ class _CourseCardState extends State<CourseCard> {
                         builder: (context) => CourseScreen(
                           details: details,
                           lectures: lectures,
-                          // files: ,
+                          files: files,
                           reviews: reviews,
                         ),
                       ),

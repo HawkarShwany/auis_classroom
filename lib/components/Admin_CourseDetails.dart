@@ -86,6 +86,22 @@ class _AdminDetailsState extends State<AdminDetails> {
     }
   }
 
+  void updateScreen(dynamic response) async {
+    // if (response['response'] == 'updated') {
+    //   var newData = await Network.getCourseDetail(courseId);
+    //   setState(() {
+    //     courseId = newData['CourseId'];
+    //     courseTitle = newData['CourseName'];
+    //     courseDescription = newData['Discription'];
+    //     department = getDep(newData['DepId']);
+    //     prerequisites =
+    //         newData['Prerequisites'] == null ? '' : newData['Prerequisites'];
+    //   });
+    // }
+    Scaffold.of(context).showSnackBar(SnackBar(
+        backgroundColor: KSecondaryColor, content: Text(response['response'])));
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -211,9 +227,16 @@ class _AdminDetailsState extends State<AdminDetails> {
               Icons.done,
               color: KPrimaryColor,
             ),
-            onPressed: () {
+            onPressed: () async {
               // update the course here
-              
+              var response = await Network.updateCourse(
+                  courseId: courseId,
+                  courseTitle: courseTitle,
+                  courseDesc: courseDescription,
+                  prerequisites: prerequisites,
+                  department: department.toString(),
+                  credits: credits);
+              updateScreen(response);
             }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

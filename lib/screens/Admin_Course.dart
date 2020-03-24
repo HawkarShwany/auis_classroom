@@ -1,4 +1,5 @@
 import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
+import 'package:AUIS_classroom/components/Admin_CourseFiles.dart';
 import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
 import 'package:AUIS_classroom/components/Admin_CourseReview.dart';
 import 'package:AUIS_classroom/components/Course_files.dart';
@@ -55,7 +56,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
               children: [
                 AdminDetails(widget.details),
                 AdminLectures(widget.lectures, widget.details['CourseId']),
-                Files(),
+                AdminFiles(widget.files, widget.details['CourseId']),
                 AdminReviews(widget.reviews, widget.details['CourseId']),
               ],
             ),

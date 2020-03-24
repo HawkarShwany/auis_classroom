@@ -18,29 +18,43 @@ class _ReviewsState extends State<AdminReviews> {
   int _numberOfVotes;
   List<AdminComment> reviews = [];
 
-  void addReviews() {
-    
-    for (var i = 0; i < widget.data['reviewCount']; i++) {
-
+  void addReviews(dynamic data) {
+    if (reviews.length > 0) {
+      reviews.removeRange(0, reviews.length - 1);
+    }
+    for (var i = 0; i < data['reviewCount']; i++) {
       reviews.add(
         AdminComment(
-          widget.data['reviews'][i]['studentId'],
-          widget.data['reviews'][i]['review'],
-          widget.data['reviews'][i]['review_id'],
-          deleteReviews,  
+          data['reviews'][i]['studentId'],
+          data['reviews'][i]['review'],
+          data['reviews'][i]['review_id'],
+          deleteReviews,
         ),
       );
     }
   }
 
-  void deleteReviews(dynamic reviewId) {
-    Network.deleteReivew(reviewId);
+  void deleteReviews(dynamic reviewId) async {
+    var response = await Network.deleteReivew(reviewId);
+    if (response['response'] == 'deleted') {
+      updateScreen();
+    }
+    Scaffold.of(context).showSnackBar(SnackBar(
+        backgroundColor: KSecondaryColor, content: Text(response['response'])));
   }
+
+  void updateScreen() async {
+    var newReviews = await Network.getReviews(widget.courseId);
+    setState(() {
+      addReviews(newReviews);
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    addReviews();
+    addReviews(widget.data);
     _rating = double.parse(widget.data['rate']);
     print(_rating);
     _numberOfVotes = widget.data['votes'];

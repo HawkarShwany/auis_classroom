@@ -1,4 +1,5 @@
 import 'package:AUIS_classroom/components/Admin_CourseCard.dart';
+import 'package:AUIS_classroom/components/Custom_Drawer.dart';
 import 'package:AUIS_classroom/components/Departments.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/screens/Admin_AddCourse.dart';
@@ -48,16 +49,13 @@ class _HomeScreenState extends State<AdminHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: CustomDrawer(),
+      ),
       appBar: AppBar(),
       body: Column(
         children: <Widget>[
-          Consumer<User>(
-            builder: (context, user, child) => Text(
-              user.fname + ' ' + user.lname,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+          
           Departments(
             selectDep: selectDep,
             selectedDep: selectedDep,

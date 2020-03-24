@@ -24,8 +24,21 @@ class _LecturesState extends State<AdminLectures> {
   TextEditingController _controller = TextEditingController();
   int index;
 
-  void deleteComment(dynamic commentId) {
-    Network.deleteComment(commentId);
+  void deleteComment(dynamic commentId) async {
+    var response = await Network.deleteComment(commentId);
+    if (response['response'] == 'deleted') {
+      updateScreen();
+    }
+
+    Scaffold.of(context).showSnackBar(SnackBar(
+        backgroundColor: KSecondaryColor, content: Text(response['response'])));
+  }
+
+  updateScreen()async{
+    var newComments = await Network.getCourseLecture(widget.courseId);
+    setState(() {
+      addComments(newComments);
+    });
   }
 
   void deleteVideo(dynamic id) {

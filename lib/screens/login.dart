@@ -220,7 +220,7 @@ class _LoginState extends State<Login> {
                 enableSuggestions: true,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
-                autofocus: true,
+                autofocus: false,
                 onChanged: (value) {
                   adminemail = value;
                 },

@@ -53,7 +53,7 @@ class _CourseScreenState extends State<CourseScreen> {
             children: [
               Details(widget.details),
               Lectures(widget.lectures, widget.details['CourseId']),
-              Files(),
+              Files(widget.files,widget.details['CourseId']),
               Reviews(widget.reviews, widget.details['CourseId']),
             ],
           ),
