@@ -60,6 +60,7 @@ class _AdminDetailsState extends State<AdminDetails> {
   int credits = 3;
 
   String courseId;
+  String originalCourseId;
 
   String courseTitle;
 
@@ -87,19 +88,35 @@ class _AdminDetailsState extends State<AdminDetails> {
   }
 
   void updateScreen(dynamic response) async {
-    // if (response['response'] == 'updated') {
-    //   var newData = await Network.getCourseDetail(courseId);
-    //   setState(() {
-    //     courseId = newData['CourseId'];
-    //     courseTitle = newData['CourseName'];
-    //     courseDescription = newData['Discription'];
-    //     department = getDep(newData['DepId']);
-    //     prerequisites =
-    //         newData['Prerequisites'] == null ? '' : newData['Prerequisites'];
-    //   });
-    // }
+    if (response['response'] == 'updated') {
+      var newData = await Network.getCourseDetail(courseId);
+      setState(() {
+        courseId = newData['CourseId'];
+        courseTitle = newData['CourseName'];
+        courseDescription = newData['Discription'];
+        department = getDep(newData['DepId']);
+        prerequisites = newData['PrerequisiteCourseId'] == null
+            ? ''
+            : newData['PrerequisiteCourseId'];
+      });
+    }
     Scaffold.of(context).showSnackBar(SnackBar(
         backgroundColor: KSecondaryColor, content: Text(response['response'])));
+  }
+
+  void deleteCourse() async {
+    var response = await Network.deleteCourse(originalCourseId);
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          response['response'],
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+    if (response['response'] == 'deleted') {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -107,12 +124,13 @@ class _AdminDetailsState extends State<AdminDetails> {
     // TODO: implement initState
     super.initState();
     courseId = widget.data['CourseId'];
+    originalCourseId = widget.data['CourseId'];
     courseTitle = widget.data['CourseName'];
     courseDescription = widget.data['Discription'];
     department = getDep(widget.data['DepId']);
-    prerequisites = widget.data['Prerequisites'] == null
+    prerequisites = widget.data['PrerequisiteCourseId'] == null
         ? ''
-        : widget.data['Prerequisites'];
+        : widget.data['PrerequisiteCourseId'];
   }
 
   @override
@@ -126,6 +144,16 @@ class _AdminDetailsState extends State<AdminDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Center(
+                    child: RaisedButton(
+                        child: Text(
+                          'Delete this course',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          deleteCourse();
+                        }),
+                  ),
                   Text(
                     "Course ID",
                     style: TextStyle(fontSize: 20, height: 3),
@@ -230,7 +258,8 @@ class _AdminDetailsState extends State<AdminDetails> {
             onPressed: () async {
               // update the course here
               var response = await Network.updateCourse(
-                  courseId: courseId,
+                  originalCourseId: originalCourseId,
+                  newCourseId: courseId,
                   courseTitle: courseTitle,
                   courseDesc: courseDescription,
                   prerequisites: prerequisites,

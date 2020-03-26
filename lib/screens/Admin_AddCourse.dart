@@ -11,7 +11,8 @@ class AddCourseScreen extends StatefulWidget {
 }
 
 class _AddCourseScreenState extends State<AddCourseScreen> {
-  TextEditingController _controller = TextEditingController();
+  final globalKey = GlobalKey<ScaffoldState>();
+  final formKey = GlobalKey<FormState>();
   List<DropdownMenuItem<Dep>> departments = [
     DropdownMenuItem(
       value: Dep.CORE,
@@ -81,6 +82,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           margin: EdgeInsets.all(30),
           child: SingleChildScrollView(
             child: Form(
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -89,6 +91,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty ) {
+                        return '* this feild can not be empty';
+                      }
+                      return null;
+                    },
                     textCapitalization: TextCapitalization.characters,
                     enableSuggestions: true,
                     // controller: _controller,
@@ -102,6 +110,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return '* this feild can not be empty';
+                      }
+                      return null;
+                    },
                     enableSuggestions: true,
                     // controller: _controller,
                     decoration: kdecorateInput(
@@ -145,7 +159,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     child: DropdownButtonFormField(
                         value: department,
                         decoration: kdecorateInput(hint: null),
-                      
                         items: departments,
                         onChanged: (dynamic value) {
                           setState(() {
@@ -162,7 +175,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     child: DropdownButtonFormField(
                         value: credits,
                         decoration: kdecorateInput(hint: null),
-                        
                         items: creditItems,
                         onChanged: (int value) {
                           setState(() {
@@ -181,15 +193,25 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               Icons.add,
               color: KPrimaryColor,
             ),
-            onPressed: () {
-              Network.addCourse(
-                courseId: courseId,
-                courseTitle: courseTitle,
-                courseDesc: courseDescription,
-                prerequisites: prerequisites,
-                department: department.toString(),
-                credits: credits,
-              );
+            onPressed: () async {
+              if (formKey.currentState.validate()) {
+                var response = await Network.addCourse(
+                  courseId: courseId,
+                  courseTitle: courseTitle,
+                  courseDesc: courseDescription,
+                  prerequisites: prerequisites,
+                  department: department.toString(),
+                  credits: credits,
+                );
+
+                if (response['response'] == 'added') {
+                  // globalKey.currentState.showSnackBar(SnackBar(
+                  //     backgroundColor: KSecondaryColor,
+                  //     content: Text(response['response'])));
+
+                  Navigator.pop(context);
+                }
+              }
             }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

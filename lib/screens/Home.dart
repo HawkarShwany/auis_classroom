@@ -9,6 +9,8 @@ import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:AUIS_classroom/components/CourseCard.dart';
 import 'package:provider/provider.dart';
 
+import 'Search.dart';
+
 class HomeScreen extends StatefulWidget {
   static const String id = '/home';
   @override
@@ -19,9 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Dep selectedDep = Dep.CORE;
   List<CourseCard> courses = [];
   var response;
-  bool searchIsVisible = false;
-  // var user = Provider.of<User>(context);
-
+  
   void convert(dynamic data) {
     courses.removeRange(0, courses.length);
     for (int i = 0; i < data['count']; i++) {
@@ -47,14 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget title() {
-    if (!searchIsVisible) {
-      return Text('');
-    } else {
-      return TextFormField(
-        decoration: kdecorateInput(hint: "Search by ID"),
-      );
-    }
+  void search() async {
+    final searchWord = await Navigator.pushNamed(context, SearchScreen.id);
+
+    var searchResult = await Network.searchCourse(searchWord.toString());
+    print(searchResult);
+    setState(() {
+      selectedDep = null;
+      convert(searchResult);
+    });
   }
 
   @override
@@ -65,21 +66,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomDrawer(),
       ),
       appBar: AppBar(
-        centerTitle: true,
-        title: title(),
+       
         automaticallyImplyLeading: true,
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              setState(() {
-                if (searchIsVisible) {
-                  searchIsVisible = false;
-                  // search for a course here
-                  print("searchin.......");
-                } else {
-                  searchIsVisible = true;
-                }
-              });
+              search();
             },
             child: Icon(
               Icons.search,
@@ -97,6 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) {
+                if (courses.length == 0) 
+                  return CircularProgressIndicator();
                 return courses[index];
               },
               itemCount: courses.length,

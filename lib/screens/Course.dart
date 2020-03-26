@@ -34,6 +34,8 @@ class _CourseScreenState extends State<CourseScreen> {
         child: CustomDrawer(),
       ),
         appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.details['CourseId']),
           bottom: TabBar(
               isScrollable: true,
               labelColor: KBlue,

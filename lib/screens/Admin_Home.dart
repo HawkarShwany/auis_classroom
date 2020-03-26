@@ -3,11 +3,10 @@ import 'package:AUIS_classroom/components/Custom_Drawer.dart';
 import 'package:AUIS_classroom/components/Departments.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/screens/Admin_AddCourse.dart';
+import 'package:AUIS_classroom/screens/Search.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
-import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/components/Dep.dart';
-import 'package:provider/provider.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   static const String id = '/AdminHome';
@@ -46,16 +45,37 @@ class _HomeScreenState extends State<AdminHomeScreen> {
     });
   }
 
+  void search() async {
+    final searchWord = await Navigator.pushNamed(context, SearchScreen.id);
+
+    var searchResult = await Network.searchCourse(searchWord.toString());
+    print(searchResult);
+    setState(() {
+      selectedDep = null;
+      convert(searchResult);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
         child: CustomDrawer(),
       ),
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: <Widget>[
+          FlatButton(
+              onPressed: () {
+                search();
+              },
+              child: Icon(
+                Icons.search,
+                color: Colors.white,
+              ))
+        ],
+      ),
       body: Column(
         children: <Widget>[
-          
           Departments(
             selectDep: selectDep,
             selectedDep: selectedDep,
@@ -74,11 +94,14 @@ class _HomeScreenState extends State<AdminHomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'AddCourse',
-          child: Icon(Icons.add, color: KPrimaryColor,),
-          onPressed: () {
-            Navigator.pushNamed(context, AddCourseScreen.id);
-          },
+        child: Icon(
+          Icons.add,
+          color: KPrimaryColor,
         ),
+        onPressed: () {
+          Navigator.pushNamed(context, AddCourseScreen.id);
+        },
+      ),
     );
   }
 }

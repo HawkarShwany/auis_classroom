@@ -18,24 +18,29 @@ class AdminComment extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                name + ":",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  text,
-                  style: TextStyle(color: Colors.white),
+          Flexible(
+                      child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  name + ":",
+                  style:
+                      TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-              )
-            ],
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Flexible(
+                    child: Text(
+                      text,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           FlatButton(
             onPressed: () {

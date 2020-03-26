@@ -6,10 +6,9 @@ import 'package:file_picker/file_picker.dart';
 
 import 'FileTile.dart';
 
-
 class Files extends StatefulWidget {
   Files(this.files, this.courseId);
-  final files;
+  dynamic files;
   final courseId;
   @override
   _FilesState createState() => _FilesState();
@@ -17,22 +16,45 @@ class Files extends StatefulWidget {
 
 class _FilesState extends State<Files> {
   File file;
-  List<FileTile> files=[];
+  List<FileTile> filesList = [];
 
-  void addFiles(){
-    for (var i = 0; i < widget.files['fileCount']; i++) {
-      files.add(
-        FileTile(id: widget.files['files'][i]['fileId'], name: widget.files['files'][i]['name'])
+  void addFiles(dynamic files) {
+    filesList.removeRange(0, filesList.length);
+    for (var i = 0; i < files['fileCount']; i++) {
+      filesList.add(
+        FileTile(
+          id: files['files'][i]['fileId'],
+          name: files['files'][i]['name'],
+        ),
       );
     }
+    setState(() {});
   }
 
-@override
+  void updateScreen(dynamic response) async {
+    if (response['response'] == 'file uploaded') {
+      var files = await Network.getFiles(widget.courseId);
+
+      setState(() {
+        widget.files = files;
+        addFiles(files);
+      });
+    }
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KSecondaryColor,
+        content: Text(response['response']),
+      ),
+    );
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    addFiles();
+    addFiles(widget.files);
   }
+
   @override
   Widget build(BuildContext context) {
     print(widget.files);
@@ -42,9 +64,9 @@ class _FilesState extends State<Files> {
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: files.length,
+              itemCount: filesList.length,
               itemBuilder: (context, index) {
-                return files[index];
+                return filesList[index];
               },
             ),
           ),
@@ -55,10 +77,8 @@ class _FilesState extends State<Files> {
             ),
             onPressed: () async {
               file = await FilePicker.getFile();
-              Network.addFile(
-                file,
-                widget.courseId
-              );
+              var response = await Network.addFile(file, widget.courseId);
+              updateScreen(response);
             },
           ),
         ],
@@ -66,4 +86,3 @@ class _FilesState extends State<Files> {
     );
   }
 }
-

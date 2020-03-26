@@ -26,6 +26,7 @@ class _LoginState extends State<Login> {
   String loginPassword;
   String adminemail;
   String adminPassword;
+  bool _isVisible = false;
 
   void addUser(var data) {
     print("adding data; " + data['id']);
@@ -50,6 +51,10 @@ class _LoginState extends State<Login> {
         ),
       );
     } else {
+      setState(() {
+        _isVisible = true;
+      });
+      
       print("cant proceed");
     }
   }
@@ -73,119 +78,131 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Flexible(
-              child: Text(
-                "AUIS Classroom",
-                style: TextStyle(color: Colors.white, fontSize: 30),
-              ),
-            ),
-
-            // the box of inputs
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: KSecondaryColor,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+        body: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(
+                  child: Text(
+                    "AUIS Classroom",
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
                 ),
-              ),
-              child: Form(
-                key: _loginformKey,
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Login",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+
+                // the box of inputs
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: KSecondaryColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return '* Please enter text here';
-                        }
-                        return null;
-                      },
-                      decoration: kdecorateInput(hint: 'ID'),
-                      enableSuggestions: true,
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.emailAddress,
-                      autofocus: false,
-                      onChanged: (value) {
-                        loginId = value;
-                      },
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return '* Please enter text here';
-                        }
-                        return null;
-                      },
-                      decoration: kdecorateInput(hint: 'Password'),
-                      enableSuggestions: true,
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.visiblePassword,
-                      autofocus: false,
-                      onChanged: (value) {
-                        loginPassword = value;
-                      },
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  ),
+                  child: Form(
+                    key: _loginformKey,
+                    child: Column(
                       children: <Widget>[
-                        RaisedButton(
-                          child: Text(
-                            "login",
-                            style: KPillTextStyle,
-                          ),
-                          onPressed: () async {
-                            if (_loginformKey.currentState.validate()) {
-                              login();
-                            }
-                          },
-                        ),
                         Text(
-                          'or',
-                          style: TextStyle(color: Colors.white),
+                          "Login",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                        RaisedButton(
-                          child: Text(
-                            "register",
-                            style: KPillTextStyle,
-                          ),
-                          onPressed: () {
-                            register();
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return '* Please enter text here';
+                            }
+                            return null;
                           },
+                          decoration: kdecorateInput(hint: 'ID'),
+                          enableSuggestions: true,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.emailAddress,
+                          autofocus: false,
+                          onChanged: (value) {
+                            loginId = value;
+                          },
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextFormField(
+                          obscureText: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return '* Please enter text here';
+                            }
+                            return null;
+                          },
+                          decoration: kdecorateInput(hint: 'Password'),
+                          enableSuggestions: true,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.visiblePassword,
+                          autofocus: false,
+                          onChanged: (value) {
+                            loginPassword = value;
+                          },
+                        ),
+                        Visibility(
+                          visible: _isVisible,
+                            child: Text(
+                          "ID or password is incorrect",
+                          style: TextStyle(color: Colors.red),
+                        )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            RaisedButton(
+                              child: Text(
+                                "login",
+                                style: KPillTextStyle,
+                              ),
+                              onPressed: () async {
+                                if (_loginformKey.currentState.validate()) {
+                                  login();
+                                }
+                              },
+                            ),
+                            Text(
+                              'or',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            RaisedButton(
+                              child: Text(
+                                "register",
+                                style: KPillTextStyle,
+                              ),
+                              onPressed: () {
+                                register();
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Text('Admins'),
+                FlatButton(
+                  onPressed: () {
+                    adminLoginPopup();
+                  },
+                  child: Text(
+                    'login here',
+                    style: TextStyle(color: KBlue),
+                  ),
+                )
+              ],
             ),
-            Text('Admins'),
-            FlatButton(
-              onPressed: () {
-                adminLoginPopup();
-              },
-              child: Text(
-                'login here',
-                style: TextStyle(color: KBlue),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
@@ -229,6 +246,7 @@ class _LoginState extends State<Login> {
                 height: 30,
               ),
               TextFormField(
+                obscureText: true,
                 validator: (value) {
                   if (value.isEmpty) {
                     return '* Please enter text here';

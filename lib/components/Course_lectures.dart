@@ -6,10 +6,8 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'Custom_Drawer.dart';
-
 class Lectures extends StatefulWidget {
-  final data;
+  dynamic data;
   final courseId;
   Lectures(this.data, this.courseId);
 
@@ -22,17 +20,21 @@ class _LecturesState extends State<Lectures> {
   List<Comment> comments = [];
   String comment;
   TextEditingController _controller = TextEditingController();
-  int index ;
+  int index;
 
   void addComments(var data) {
+        comments.removeRange(0, comments.length);
     for (var i = 0; i < data['commentcount']; i++) {
       comments.add(Comment(
           data['comments'][i]['studentId'], data['comments'][i]['comment']));
     }
+    setState(() {
+      
+    });
   }
 
-  void nothing() {}
   void addLectures(var data) {
+    lectures.removeRange(0, lectures.length);
     for (var i = 0; i < data['vidcount']; i++) {
       lectures.add(
         Video(
@@ -41,6 +43,23 @@ class _LecturesState extends State<Lectures> {
         ),
       );
     }
+  }
+
+  void updateScreen(dynamic response) async {
+    if (response['response'] == 'added') {
+      var lectures = await Network.getCourseLecture(widget.courseId);
+      setState(() {
+        widget.data = lectures;
+        addComments(lectures);
+        addLectures(lectures);
+      });
+    }
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KSecondaryColor,
+        content: Text(response['response']),
+      ),
+    );
   }
 
   @override
@@ -52,12 +71,14 @@ class _LecturesState extends State<Lectures> {
     index = lectures.length > 0 ? 0 : -1;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      
-      body: Column(
+  Widget addLecture() {
+    if (lectures.isEmpty) {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 20),
+        child: Text("No Lectures available now"),
+      );
+    } else {
+      return Column(
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(left: 30, right: 30, top: 30),
@@ -114,59 +135,81 @@ class _LecturesState extends State<Lectures> {
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white),
-              ),
-            ),
-            child: Text(
-              'comments',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Expanded(
-              child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              return comments[index];
-            },
-          )),
-          // add a comment
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: TextFormField(
-              autocorrect: false,
-              controller: _controller,
-              onChanged: (value) => comment = value,
-              // style: TextStyle(color: Colors.white),
-              decoration: kdecorateInput(
-                hint: "Add a comment",
-                suffix: FlatButton(
-                  onPressed: () {
-                    // send the comment here
-                    setState(() async {
-                      Network.comment(
-                          Provider.of<User>(context, listen: false).id,
-                          widget.courseId,
-                          comment);
-                      // var lectures = await Network.getCourseLecture(widget.courseId);
-                      // addComments(lectures);
-                      _controller.clear();
-                    });
-                  },
-                  child: Icon(
-                    Icons.send,
-                    color: KBlue,
+        ],
+      );
+    }
+  }
+
+  Widget commentHeader() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.white),
+        ),
+      ),
+      child: Text(
+        'comments',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 200,
+          child: Column(
+            children: <Widget>[
+              addLecture(),
+              commentHeader(),
+              Expanded(
+                  child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: comments.length,
+                itemBuilder: (context, index) {
+                  if (comments.length == 0) return CircularProgressIndicator();
+                  return comments[index];
+                },
+              )),
+              // add a comment
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                child: TextFormField(
+                  autocorrect: false,
+                  controller: _controller,
+                  onChanged: (value) => comment = value,
+                  // style: TextStyle(color: Colors.white),
+                  decoration: kdecorateInput(
+                    hint: "Add a comment",
+                    suffix: FlatButton(
+                      onPressed: () {
+                        // send the comment here
+                        setState(() async {
+                          var response = await Network.comment(
+                              Provider.of<User>(context, listen: false).id,
+                              widget.courseId,
+                              comment);
+                         updateScreen(response);
+
+                          _controller.clear();
+                        });
+                      },
+                      child: Icon(
+                        Icons.send,
+                        color: KBlue,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_uploader/flutter_uploader.dart';
 
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
@@ -27,15 +26,34 @@ Future _send(String link) async {
   }
 }
 
-Future updateCourse({@required String courseId,
+Future rateCourse(String studentId, String courseId, String rate){
+  String link = getUrl + 'rateCourse&studentId=' + studentId + '&courseId=' + _fix(courseId) + '&rate='+ rate;
+  return _send(link);
+}
+
+Future searchCourse(String keyWord){
+  String link = getUrl + 'searchCourse&keyword='+ _fix(keyWord);
+  return _send(link);
+}
+
+Future deleteCourse(String courseId){
+  String link = getUrl + 'deleteCourse&courseId=' + _fix(courseId);
+  return _send(link);
+}
+
+Future updateCourse(
+    {@required String originalCourseId,
+    @required String newCourseId,
     @required String courseTitle,
     @required String courseDesc,
     @required String prerequisites,
     @required String department,
-    @required int credits}){
-String link = getUrl +
-      'updateCourse&courseId=' +
-      _fix(courseId) +
+    @required int credits}) {
+  String link = getUrl +
+      'updateCourse&originalCourseId=' +
+      _fix(originalCourseId) +
+      '&courseId=' +
+      _fix(newCourseId) +
       '&courseTitle=' +
       _fix(courseTitle) +
       '&courseDesc=' +
@@ -46,9 +64,10 @@ String link = getUrl +
       _fix(prerequisites) +
       '&credits=' +
       credits.toString();
-      return _send(link);
+  return _send(link);
 }
-void addCourse(
+
+Future addCourse(
     {@required String courseId,
     @required String courseTitle,
     @required String courseDesc,
@@ -69,48 +88,46 @@ void addCourse(
       '&credits=' +
       credits.toString();
   print(courseDesc);
-  _send(link);
+  return _send(link);
 }
 
-Future deleteFile(String id){
-  String link = getUrl + 'deleteFile&id='+id;
+Future deleteFile(String id) {
+  String link = getUrl + 'deleteFile&id=' + id;
   print(link);
   return _send(link);
 }
-Future getFiles(String courseId){
+
+Future getFiles(String courseId) {
   String link = getUrl + 'getFiles&courseId=' + _fix(courseId);
   return _send(link);
 }
-Future addFile(File file, String courseId)async {
+
+Future addFile(File file, String courseId) async {
   try {
     String fileString = base64Encode(file.readAsBytesSync());
     print('trying............');
     http.Response response = await http.post(
-    "http://192.168.1.9:8081/capstone/web/upload.php",
-    body: {
-      'action': 'uploadFile',
-      'file': fileString,
-      'name': file.path.split('/').last,
-      'courseId': courseId
-    },
-  );
-  print('somting going on');
-  
-  if (response.statusCode == 200) {
-    var data = jsonDecode(response.body);
-    print(" file response:     "+data.toString());
-    return data;
-  }else{
-    print("bad response:       "+ response.statusCode.toString());
-    
-  }
-  
+      "http://192.168.1.9:8081/capstone/web/upload.php",
+      body: {
+        'action': 'uploadFile',
+        'file': fileString,
+        'name': file.path.split('/').last,
+        'courseId': courseId
+      },
+    );
+    print('somting going on');
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      print(" file response:     " + data.toString());
+      return data;
+    } else {
+      print("bad response:       " + response.statusCode.toString());
+    }
   } catch (e) {
-    print('error : '+e.toString());
-    return {"response":"error file was not uploaded"};
+    print('error : ' + e.toString());
+    return {"response": "error file was not uploaded"};
   }
-  
-  
 }
 
 void addYouTubeVideo(String title, String url, String courseId) {
@@ -197,6 +214,8 @@ String _fix(String text) {
   return null;
 }
 
+
+
 Future getCourseLecture(String courseId) async {
   String link = getUrl + 'getcourselecture&courseId=' + _fix(courseId);
   return _send(link);
@@ -205,11 +224,11 @@ Future getCourseLecture(String courseId) async {
 Future getCourses(Dep dep) async {
   String link = getUrl + 'getcourses&dep=' + dep.toString();
   var response = await _send(link);
-  // print("from getcourses network: "+response.toString());
+  
   return response;
 }
 
-void comment(String studentId, String courseId, String comment) {
+Future comment(String studentId, String courseId, String comment) {
   String link = getUrl +
       'comment&studentId=' +
       studentId +
@@ -217,7 +236,7 @@ void comment(String studentId, String courseId, String comment) {
       _fix(courseId) +
       '&comment=' +
       comment;
-  _send(link);
+  return _send(link);
 }
 
 Future register(String id, String fname, String lname, String email,
