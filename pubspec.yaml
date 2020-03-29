@@ -26,12 +26,18 @@ dependencies:
   http: ^0.12.0+4
   rflutter_alert: ^1.0.3
   provider: ^4.0.4
-  awsome_video_player: ^1.0.6
   youtube_player_flutter: ^6.1.0+4
   smooth_star_rating: 1.0.4+2
   file_picker: ^1.5.0+2
+  open_file: ^3.0.1
+  path_provider: ^1.6.5
+  fl_chart: ^0.8.7
+  google_sign_in: ^4.3.0
+  flutter_auth_buttons: ^0.7.0
+  firebase_core: ^0.4.4+3
+  firebase_analytics: ^5.0.11
+  firebase_auth: ^0.15.5+3
 
-  flutter_uploader: ^1.2.0
 
 dev_dependencies:
   flutter_test:

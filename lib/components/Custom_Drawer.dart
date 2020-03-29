@@ -3,6 +3,8 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -27,6 +29,8 @@ class CustomDrawer extends StatelessWidget {
           // Divider(height: 1, color: Colors.white,),
           ListTile(
             onTap: () {
+              GoogleSignIn _googleSignIn = GoogleSignIn();
+              _googleSignIn.signOut();
               Navigator.pushNamedAndRemoveUntil(context, Login.id,  (route) => false);
             },
             leading: Icon(

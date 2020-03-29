@@ -2,8 +2,8 @@ import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
 import 'package:AUIS_classroom/components/Admin_CourseFiles.dart';
 import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
 import 'package:AUIS_classroom/components/Admin_CourseReview.dart';
-import 'package:AUIS_classroom/components/Course_files.dart';
 import 'package:AUIS_classroom/components/Custom_Drawer.dart';
+import 'package:AUIS_classroom/components/Insights.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
@@ -27,7 +27,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
     // );
     return SafeArea(
           child: DefaultTabController(
-        length: 4,
+        length: 5,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           drawer: Drawer(
@@ -38,17 +38,18 @@ class _CourseScreenState extends State<AdminCourseScreen> {
             centerTitle: true,
             title: Text(widget.details['CourseId']),
             bottom: TabBar(
-                isScrollable: true,
+                // isScrollable: true,
                 labelColor: KBlue,
                 unselectedLabelColor: Colors.white54,
                 indicatorColor: KBlue,
                 indicatorSize: TabBarIndicatorSize.label,
                 dragStartBehavior: DragStartBehavior.start,
                 tabs: [
-                  Text('Details'),
-                  Text('Video Lectures'),
-                  Text('Files'),
-                  Text('Reviews'),
+                  Icon(Icons.info_outline),
+                  Icon(Icons.ondemand_video),
+                  Icon(Icons.insert_drive_file),
+                  Icon(Icons.comment),
+                  Icon(Icons.pie_chart_outlined)
                 ]),
           ),
           body: Container(
@@ -58,6 +59,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
                 AdminLectures(widget.lectures, widget.details['CourseId']),
                 AdminFiles(widget.files, widget.details['CourseId']),
                 AdminReviews(widget.reviews, widget.details['CourseId']),
+                Insights(widget.details['CourseId']),
               ],
             ),
           ),

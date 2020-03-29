@@ -4,6 +4,7 @@ import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
@@ -24,6 +25,21 @@ Future _send(String link) async {
   } catch (e) {
     print(e);
   }
+}
+
+Future getInsights(String courseId){
+  String link = getUrl + 'getInsights&courseId='+ _fix(courseId);
+  return _send(link);
+}
+
+Future downVote(String fileId, String studentId){
+  String link = getUrl + 'downvote&fileId=' + fileId+'&studentId='+studentId;
+  return _send(link);
+}
+
+Future upVote(String fileId, String studentId){
+  String link = getUrl + 'upvote&fileId=' + fileId+'&studentId='+studentId;
+  return _send(link);
 }
 
 Future rateCourse(String studentId, String courseId, String rate){
@@ -102,7 +118,36 @@ Future getFiles(String courseId) {
   return _send(link);
 }
 
+Future<File> downloadFile(String fileId)async{
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+String appDocPath = appDocDir.path;
+  File file;
+  try {
+    http.Response response = await http.post(
+      "http://192.168.1.9:8081/capstone/web/upload.php",
+      body: {
+        'action': 'downloadFile',
+        'id': fileId,
+      },
+    );
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+       file = File(appDocPath+ data['name'].toString());
+      file.writeAsBytesSync(base64Decode(data['file'].toString()));
+     return file;
+    } else {
+      print("bad response:       " + response.statusCode.toString());
+      return file;
+    }
+  } catch (e) {
+    print("Error: "+ e.toString());
+    return file;
+  }
+}
+
 Future addFile(File file, String courseId) async {
+  String filename= file.path.split('/').last;
+  String filetype = filename.split('.').last;
   try {
     String fileString = base64Encode(file.readAsBytesSync());
     print('trying............');
@@ -111,7 +156,8 @@ Future addFile(File file, String courseId) async {
       body: {
         'action': 'uploadFile',
         'file': fileString,
-        'name': file.path.split('/').last,
+        'name': filename,
+        'type': filetype,
         'courseId': courseId
       },
     );

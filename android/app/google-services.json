@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "603939285523",
+    "firebase_url": "https://auis-classroom.firebaseio.com",
+    "project_id": "auis-classroom",
+    "storage_bucket": "auis-classroom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603939285523:android:e4d558517080cb86402de6",
+        "android_client_info": {
+          "package_name": "com.example.AUIS_classroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "603939285523-5onlbrrp5nf8sqjqh8qhsks8vcqittbt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.AUIS_classroom",
+            "certificate_hash": "01a9933d2a16cb7d6d88cc1a4b9a37b4380f8a0c"
+          }
+        },
+        {
+          "client_id": "603939285523-3ndi8ssk00958dpnjl2bfrskvrqimt6o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXKzkapjqNiUqKHssL4VgruQ6CwnnpUf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "603939285523-3ndi8ssk00958dpnjl2bfrskvrqimt6o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

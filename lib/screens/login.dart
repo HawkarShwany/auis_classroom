@@ -6,6 +6,9 @@ import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/screens/Home.dart';
 import 'package:AUIS_classroom/services/user.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   static const String id = '/login';
@@ -27,6 +30,34 @@ class _LoginState extends State<Login> {
   String adminemail;
   String adminPassword;
   bool _isVisible = false;
+  bool _adminIncorrectIsvisible = false;
+  GoogleSignIn _googleSignIn = GoogleSignIn();
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _handleSignIn() async {
+    try {
+      final GoogleSignInAccount account = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication auth = await account.authentication;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: auth.accessToken,
+        idToken: auth.idToken,
+      );
+
+      FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+      String fname = user.displayName.split(' ').first;
+      String lname = user.displayName.split(' ').last;
+      String id = user.uid;
+      String email = user.email;
+      String password = 'none';
+      var response = await Network.register(id, fname, lname, email, password);
+      if (response['registered'] == 'true' ||
+          response['registered'] == 'duplicate') {
+        login(id, password);
+      }
+    } catch (error) {
+      print("error: " + error.toString());
+    }
+  }
 
   void addUser(var data) {
     print("adding data; " + data['id']);
@@ -38,8 +69,8 @@ class _LoginState extends State<Login> {
     Provider.of<User>(context, listen: false).admin(data['isAdmin']);
   }
 
-  void login() async {
-    var response = await Network.login(loginId, loginPassword);
+  void login(String id, String password) async {
+    var response = await Network.login(id, password);
     print(response);
     if (response['data'].toString() == 'correct') {
       addUser(response);
@@ -54,7 +85,7 @@ class _LoginState extends State<Login> {
       setState(() {
         _isVisible = true;
       });
-      
+
       print("cant proceed");
     }
   }
@@ -69,6 +100,9 @@ class _LoginState extends State<Login> {
         MaterialPageRoute(builder: (context) => AdminHomeScreen()),
       );
     } else {
+      setState(() {
+        _adminIncorrectIsvisible = true;
+      });
       print("cant proceed");
     }
   }
@@ -149,11 +183,11 @@ class _LoginState extends State<Login> {
                           },
                         ),
                         Visibility(
-                          visible: _isVisible,
+                            visible: _isVisible,
                             child: Text(
-                          "ID or password is incorrect",
-                          style: TextStyle(color: Colors.red),
-                        )),
+                              "ID or password is incorrect",
+                              style: TextStyle(color: Colors.red),
+                            )),
                         SizedBox(
                           height: 30,
                         ),
@@ -167,7 +201,7 @@ class _LoginState extends State<Login> {
                               ),
                               onPressed: () async {
                                 if (_loginformKey.currentState.validate()) {
-                                  login();
+                                  login(loginId, loginPassword);
                                 }
                               },
                             ),
@@ -186,6 +220,14 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        GoogleSignInButton(
+                          onPressed: () {
+                            _handleSignIn();
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -209,6 +251,10 @@ class _LoginState extends State<Login> {
   }
 
   void adminLoginPopup() {
+    // setState(() {
+    //   _adminIncorrectIsvisible = false;
+    // });
+
     Alert(
         context: context,
         title: 'Admin Login',
@@ -237,7 +283,7 @@ class _LoginState extends State<Login> {
                 enableSuggestions: true,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
-                autofocus: false,
+                autofocus: true,
                 onChanged: (value) {
                   adminemail = value;
                 },
@@ -262,6 +308,12 @@ class _LoginState extends State<Login> {
                   adminPassword = value;
                 },
               ),
+              Visibility(
+                  visible: _adminIncorrectIsvisible,
+                  child: Text(
+                    "ID or password is incorrect",
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  )),
             ],
           ),
         ),

@@ -13,35 +13,34 @@ const KPillTextStyle = TextStyle(
   color: Colors.white,
   decoration: TextDecoration.none,
 );
+const KBox = BoxDecoration(
+  
+  color: KSecondaryColor,
+  borderRadius: BorderRadius.all(Radius.circular(10)),
+);
 
-InputDecoration kdecorateInput({ @required String hint, Widget leadingIcon, Widget suffix}) {
+InputDecoration kdecorateInput(
+    {@required String hint, Widget leadingIcon, Widget suffix}) {
   return InputDecoration(
-    focusedBorder:OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.white
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-    ) ,
-    hoverColor: Colors.white,
-    focusColor: Colors.white,
-    hintText: hint,
-    hintStyle: TextStyle(
-      color: Colors.grey,
-    ),
-    icon: leadingIcon,
-    suffixIcon: suffix,
-    filled: true,
-    fillColor: Colors.white,
-    errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red
+      hoverColor: Colors.white,
+      focusColor: Colors.white,
+      hintText: hint,
+      hintStyle: TextStyle(
+        color: Colors.grey,
       ),
-    ),
-    border: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.white
+      icon: leadingIcon,
+      suffixIcon: suffix,
+      filled: true,
+      fillColor: Colors.white,
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
       ),
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-    )
-  );
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ));
 }
