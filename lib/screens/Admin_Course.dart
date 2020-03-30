@@ -10,11 +10,9 @@ import 'package:AUIS_classroom/constants.dart';
 
 class AdminCourseScreen extends StatefulWidget {
   static String id = '/AdminCourse';
-  final details;
-  final lectures;
-  final files;
-  final reviews;
-  AdminCourseScreen({this.details, this.lectures, this.files, this.reviews});
+  final courseId;
+  
+  AdminCourseScreen({@required this.courseId});
   @override
   _CourseScreenState createState() => _CourseScreenState();
 }
@@ -36,7 +34,7 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: true,
             centerTitle: true,
-            title: Text(widget.details['CourseId']),
+            title: Text(widget.courseId),
             bottom: TabBar(
                 // isScrollable: true,
                 labelColor: KBlue,
@@ -55,11 +53,11 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           body: Container(
             child: TabBarView(
               children: [
-                AdminDetails(widget.details),
-                AdminLectures(widget.lectures, widget.details['CourseId']),
-                AdminFiles(widget.files, widget.details['CourseId']),
-                AdminReviews(widget.reviews, widget.details['CourseId']),
-                Insights(widget.details['CourseId']),
+                AdminDetails(widget.courseId),
+                AdminLectures(widget.courseId),
+                AdminFiles(widget.courseId),
+                AdminReviews(widget.courseId),
+                Insights(widget.courseId),
               ],
             ),
           ),

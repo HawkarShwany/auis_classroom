@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Lectures extends StatefulWidget {
-  dynamic data;
   final courseId;
-  Lectures(this.data, this.courseId);
+  Lectures(this.courseId);
 
   @override
   _LecturesState createState() => _LecturesState();
@@ -23,14 +22,12 @@ class _LecturesState extends State<Lectures> {
   int index;
 
   void addComments(var data) {
-        comments.removeRange(0, comments.length);
+    comments.removeRange(0, comments.length);
     for (var i = 0; i < data['commentcount']; i++) {
       comments.add(Comment(
-          data['comments'][i]['studentId'], data['comments'][i]['comment']));
+          data['comments'][i]['fname'] + ' ' + data['comments'][i]['lname'],
+          data['comments'][i]['comment']));
     }
-    setState(() {
-      
-    });
   }
 
   void addLectures(var data) {
@@ -49,7 +46,6 @@ class _LecturesState extends State<Lectures> {
     if (response['response'] == 'added') {
       var lectures = await Network.getCourseLecture(widget.courseId);
       setState(() {
-        widget.data = lectures;
         addComments(lectures);
         addLectures(lectures);
       });
@@ -60,15 +56,6 @@ class _LecturesState extends State<Lectures> {
         content: Text(response['response']),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    addLectures(widget.data);
-    addComments(widget.data);
-    index = lectures.length > 0 ? 0 : -1;
   }
 
   Widget addLecture() {
@@ -160,57 +147,67 @@ class _LecturesState extends State<Lectures> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height - 200,
-          child: Column(
-            children: <Widget>[
-              addLecture(),
-              commentHeader(),
-              Expanded(
-                  child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: comments.length,
-                itemBuilder: (context, index) {
-                  if (comments.length == 0) return CircularProgressIndicator();
-                  return comments[index];
-                },
-              )),
-              // add a comment
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                child: TextFormField(
-                  autocorrect: false,
-                  controller: _controller,
-                  onChanged: (value) => comment = value,
-                  // style: TextStyle(color: Colors.white),
-                  decoration: kdecorateInput(
-                    hint: "Add a comment",
-                    suffix: FlatButton(
-                      onPressed: () {
-                        // send the comment here
-                        setState(() async {
-                          var response = await Network.comment(
-                              Provider.of<User>(context, listen: false).id,
-                              widget.courseId,
-                              comment);
-                         updateScreen(response);
+      body: FutureBuilder(
+        future: Network.getCourseLecture(widget.courseId),
+        builder: (context, snapshot) {
+        if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
 
-                          _controller.clear();
-                        });
-                      },
-                      child: Icon(
-                        Icons.send,
-                        color: KBlue,
+        addLectures(snapshot.data);
+        addComments(snapshot.data);
+        index = lectures.length > 0 ? 0 : -1;
+        return SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - 200,
+            child: Column(
+              children: <Widget>[
+                addLecture(),
+                commentHeader(),
+                Expanded(
+                    child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: comments.length,
+                  itemBuilder: (context, index) {
+                    if (comments.length == 0)
+                      return CircularProgressIndicator();
+                    return comments[index];
+                  },
+                )),
+                // add a comment
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  child: TextFormField(
+                    autocorrect: false,
+                    controller: _controller,
+                    onChanged: (value) => comment = value,
+                    // style: TextStyle(color: Colors.white),
+                    decoration: kdecorateInput(
+                      hint: "Add a comment",
+                      suffix: FlatButton(
+                        onPressed: () {
+                          // send the comment here
+                          setState(() async {
+                            var response = await Network.comment(
+                                Provider.of<User>(context, listen: false).id,
+                                widget.courseId,
+                                comment);
+                            updateScreen(response);
+
+                            _controller.clear();
+                          });
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: KBlue,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

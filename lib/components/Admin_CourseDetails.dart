@@ -5,8 +5,8 @@ import 'package:AUIS_classroom/components/Dep.dart';
 
 class AdminDetails extends StatefulWidget {
   static const String id = '/AdminDetails';
-  dynamic data;
-  AdminDetails(this.data);
+  final courseId;
+  AdminDetails(this.courseId);
 
   @override
   _AdminDetailsState createState() => _AdminDetailsState();
@@ -119,136 +119,137 @@ class _AdminDetailsState extends State<AdminDetails> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    courseId = widget.data['CourseId'];
-    originalCourseId = widget.data['CourseId'];
-    courseTitle = widget.data['CourseName'];
-    courseDescription = widget.data['Discription'];
-    department = getDep(widget.data['DepId']);
-    prerequisites = widget.data['PrerequisiteCourseId'] == null
-        ? ''
-        : widget.data['PrerequisiteCourseId'];
-  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          margin: EdgeInsets.all(30),
-          child: SingleChildScrollView(
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: RaisedButton(
-                        child: Text(
-                          'Delete this course',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          deleteCourse();
-                        }),
-                  ),
-                  Text(
-                    "Course ID",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.characters,
-                    enableSuggestions: true,
-                    initialValue: courseId,
-                    // controller: _controller,
-                    decoration: kdecorateInput(
-                      hint: 'Course ID',
+        body: FutureBuilder(
+          future: Network.getCourseDetail(widget.courseId),
+          builder: (context, snapshot) {
+          if (!snapshot.hasData) return CircularProgressIndicator();
+
+          courseId = snapshot.data['CourseId'];
+          originalCourseId = snapshot.data['CourseId'];
+          courseTitle = snapshot.data['CourseName'];
+          courseDescription = snapshot.data['Discription'];
+          department = getDep(snapshot.data['DepId']);
+          prerequisites = snapshot.data['PrerequisiteCourseId'] == null
+              ? ''
+              : snapshot.data['PrerequisiteCourseId'];
+          return Container(
+            margin: EdgeInsets.all(30),
+            child: SingleChildScrollView(
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: RaisedButton(
+                          child: Text(
+                            'Delete this course',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            deleteCourse();
+                          }),
                     ),
-                    onChanged: (value) => courseId = value,
-                  ),
-                  Text(
-                    "Course Title",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  TextFormField(
-                    initialValue: courseTitle,
-                    enableSuggestions: true,
-                    // controller: _controller,
-                    decoration: kdecorateInput(
-                      hint: 'Course Title',
+                    Text(
+                      "Course ID",
+                      style: TextStyle(fontSize: 20, height: 3),
                     ),
-                    onChanged: (value) => courseTitle = value,
-                  ),
-                  Text(
-                    "Course Description",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  TextFormField(
-                    initialValue: courseDescription,
-                    // expands: true,
-                    minLines: 1,
-                    maxLines: 20,
-                    enableSuggestions: true,
-                    // controller: _controller,
-                    decoration: kdecorateInput(
-                      hint: 'Course Description',
+                    TextFormField(
+                      textCapitalization: TextCapitalization.characters,
+                      enableSuggestions: true,
+                      initialValue: courseId,
+                      // controller: _controller,
+                      decoration: kdecorateInput(
+                        hint: 'Course ID',
+                      ),
+                      onChanged: (value) => courseId = value,
                     ),
-                    onChanged: (value) => courseDescription = value,
-                  ),
-                  Text(
-                    "Prerequisites",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  TextFormField(
-                    initialValue: prerequisites,
-                    enableSuggestions: true,
-                    // controller: _controller,
-                    decoration: kdecorateInput(
-                      hint: 'Prerequisites',
+                    Text(
+                      "Course Title",
+                      style: TextStyle(fontSize: 20, height: 3),
                     ),
-                    onChanged: (value) => prerequisites = value,
-                  ),
-                  Text(
-                    "Department",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  Container(
-                    width: 250,
-                    child: DropdownButtonFormField(
-                      decoration: kdecorateInput(hint: null),
-                      value: department,
-                      items: departments,
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          department = value;
-                        });
-                      },
+                    TextFormField(
+                      initialValue: courseTitle,
+                      enableSuggestions: true,
+                      // controller: _controller,
+                      decoration: kdecorateInput(
+                        hint: 'Course Title',
+                      ),
+                      onChanged: (value) => courseTitle = value,
                     ),
-                  ),
-                  Text(
-                    "Credits",
-                    style: TextStyle(fontSize: 20, height: 3),
-                  ),
-                  Container(
-                    width: 80,
-                    child: DropdownButtonFormField(
-                      value: credits,
-                      decoration: kdecorateInput(hint: null).copyWith(),
-                      items: creditItems,
-                      onChanged: (int value) {
-                        setState(() {
-                          credits = value;
-                        });
-                      },
+                    Text(
+                      "Course Description",
+                      style: TextStyle(fontSize: 20, height: 3),
                     ),
-                  ),
-                ],
+                    TextFormField(
+                      initialValue: courseDescription,
+                      // expands: true,
+                      minLines: 1,
+                      maxLines: 20,
+                      enableSuggestions: true,
+                      // controller: _controller,
+                      decoration: kdecorateInput(
+                        hint: 'Course Description',
+                      ),
+                      onChanged: (value) => courseDescription = value,
+                    ),
+                    Text(
+                      "Prerequisites",
+                      style: TextStyle(fontSize: 20, height: 3),
+                    ),
+                    TextFormField(
+                      initialValue: prerequisites,
+                      enableSuggestions: true,
+                      // controller: _controller,
+                      decoration: kdecorateInput(
+                        hint: 'Prerequisites',
+                      ),
+                      onChanged: (value) => prerequisites = value,
+                    ),
+                    Text(
+                      "Department",
+                      style: TextStyle(fontSize: 20, height: 3),
+                    ),
+                    Container(
+                      width: 250,
+                      child: DropdownButtonFormField(
+                        decoration: kdecorateInput(hint: null),
+                        value: department,
+                        items: departments,
+                        onChanged: (dynamic value) {
+                          setState(() {
+                            department = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Text(
+                      "Credits",
+                      style: TextStyle(fontSize: 20, height: 3),
+                    ),
+                    Container(
+                      width: 80,
+                      child: DropdownButtonFormField(
+                        value: credits,
+                        decoration: kdecorateInput(hint: null).copyWith(),
+                        items: creditItems,
+                        onChanged: (int value) {
+                          setState(() {
+                            credits = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
         floatingActionButton: FloatingActionButton(
             heroTag: 'AddCourse',
             child: Icon(

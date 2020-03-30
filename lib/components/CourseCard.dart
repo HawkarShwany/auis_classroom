@@ -6,7 +6,11 @@ import 'package:AUIS_classroom/constants.dart';
 import 'package:provider/provider.dart';
 
 class CourseCard extends StatefulWidget {
-  CourseCard({this.courseID, this.courseTitle, this.updateFavScreen, this.isFav = false});
+  CourseCard(
+      {this.courseID,
+      this.courseTitle,
+      this.updateFavScreen,
+      this.isFav = false});
   String courseID;
   String courseTitle;
   Function updateFavScreen;
@@ -16,14 +20,14 @@ class CourseCard extends StatefulWidget {
 }
 
 class _CourseCardState extends State<CourseCard> {
-  Color heartIconColor ;
+  Color heartIconColor;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    heartIconColor = widget.isFav ? KBlue: 
-  KPrimaryColor;
+    heartIconColor = widget.isFav ? KBlue : KPrimaryColor;
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,7 +42,7 @@ class _CourseCardState extends State<CourseCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Flexible(
-                      child: Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -54,36 +58,21 @@ class _CourseCardState extends State<CourseCard> {
                   height: 10,
                 ),
                 Text(
-                    widget.courseTitle,
-                    style: TextStyle(
-                      decoration: TextDecoration.none,
-                      fontSize: 14,
-                      color: Colors.white,
-                    ),
+                  widget.courseTitle,
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 14,
+                    color: Colors.white,
                   ),
+                ),
                 SizedBox(
                   height: 10,
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    // use the courseID
-                    String courseId = widget.courseID;
-                    var details = await Network.getCourseDetail(courseId);
-                    var lectures = await Network.getCourseLecture(courseId);
-                    var reviews = await Network.getReviews(courseId);
-                    var files = await Network.getFiles(courseId);
-                    // Navigator.pushNamed(context, CourseScreen.id, arguments: CourseScreen(response));
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CourseScreen(
-                          details: details,
-                          lectures: lectures,
-                          files: files,
-                          reviews: reviews,
-                        ),
-                      ),
-                    );
+                    // use the courseID{}
+                    Navigator.pushNamed(context, CourseScreen.id,
+                        arguments: widget.courseID);
                   },
                   child: Text(
                     "More Details",
@@ -102,15 +91,17 @@ class _CourseCardState extends State<CourseCard> {
             ),
             onTap: () {
               setState(() {
-                heartIconColor = (heartIconColor == KPrimaryColor)
-                    ? KBlue
-                    : KPrimaryColor;
-                    if (heartIconColor == KPrimaryColor) {
-                      Network.unmarkFav(Provider.of<User>(context, listen: false).id ,widget.courseID);
-                      widget.updateFavScreen();
-                    }else{
-                      Network.markFav(Provider.of<User>(context, listen: false).id ,widget.courseID);
-                    }
+                heartIconColor =
+                    (heartIconColor == KPrimaryColor) ? KBlue : KPrimaryColor;
+                if (heartIconColor == KPrimaryColor) {
+                  Network.unmarkFav(
+                      Provider.of<User>(context, listen: false).id,
+                      widget.courseID);
+                  widget.updateFavScreen();
+                } else {
+                  Network.markFav(Provider.of<User>(context, listen: false).id,
+                      widget.courseID);
+                }
               });
             },
           ),

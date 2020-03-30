@@ -8,9 +8,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Reviews extends StatefulWidget {
-  dynamic data;
   final courseId;
-  Reviews(this.data, this.courseId);
+  Reviews(this.courseId);
   @override
   _ReviewsState createState() => _ReviewsState();
 }
@@ -25,7 +24,6 @@ class _ReviewsState extends State<Reviews> {
   void updateScreen(dynamic response) async {
     var newReviews = await Network.getReviews(widget.courseId);
     setState(() {
-      widget.data = newReviews;
       addReviews(newReviews);
       _rating = double.parse(newReviews['rate']);
       _numberOfVotes = newReviews['votes'];
@@ -42,7 +40,8 @@ class _ReviewsState extends State<Reviews> {
     reviews.removeRange(0, reviews.length);
     for (var i = 0; i < data['reviewCount']; i++) {
       reviews.add(Comment(
-          data['reviews'][i]['studentId'], data['reviews'][i]['review']));
+          data['reviews'][i]['fname'] + ' ' + data['reviews'][i]['lname'],
+          data['reviews'][i]['review']));
     }
   }
 
@@ -51,98 +50,99 @@ class _ReviewsState extends State<Reviews> {
         Provider.of<User>(context, listen: false).id,
         widget.courseId,
         _rating.toString());
-        
-    updateScreen(response);
-  }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    addReviews(widget.data);
-    _rating = double.parse(widget.data['rate']);
-    print(_rating);
-    _numberOfVotes = widget.data['votes'];
+    updateScreen(response);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height - 200,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                child: SmoothStarRating(
-                  onRatingChanged: (rating) {
-                    setState(() {
-                      _rating =  rating ;
-                    });
-                  },
-                  rating: _rating - 0.1,
-                  allowHalfRating: true,
-                  starCount: 5,
-                  color: KYellow,
-                  borderColor: KYellow,
-                  size: 40,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(5),
-                child: Text(_numberOfVotes.toString() + " votes"),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  rate();
-                },
-                color: KGreen,
-                child: Text(
-                  'Rate',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: reviews.length,
-                  itemBuilder: (context, index) {
-                    if (reviews.length == 0) return CircularProgressIndicator();
-                    return reviews[index];
-                  },
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                child: TextField(
-                  onChanged: (value) => _review = value,
-                  controller: _controller,
-                  decoration: kdecorateInput(
-                    hint: "Add a Review",
-                    suffix: FlatButton(
-                      onPressed: () {
-                        setState(() async {
-                          var response = await Network.review(
-                              _review,
-                              widget.courseId,
-                              Provider.of<User>(context, listen: false).id);
-                          _controller.clear();
-                          if (response['response'] == 'added')
-                            updateScreen(response);
-                        });
-                      },
-                      child: Icon(Icons.send, color: KBlue),
-                    ),
+        resizeToAvoidBottomInset: true,
+        body: FutureBuilder(
+            future: Network.getReviews(widget.courseId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+
+              addReviews(snapshot.data);
+              _rating = double.parse(snapshot.data['rate']);
+              print(_rating);
+              _numberOfVotes = snapshot.data['votes'];
+              return SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height - 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: SmoothStarRating(
+                          onRatingChanged: (rating) {
+                            setState(() {
+                              _rating = rating;
+                            });
+                          },
+                          rating: _rating - 0.1,
+                          allowHalfRating: true,
+                          starCount: 5,
+                          color: KYellow,
+                          borderColor: KYellow,
+                          size: 40,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        child: Text(_numberOfVotes.toString() + " votes"),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          rate();
+                        },
+                        color: KGreen,
+                        child: Text(
+                          'Rate',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: reviews.length,
+                          itemBuilder: (context, index) {
+                            if (reviews.length == 0)
+                              return CircularProgressIndicator();
+                            return reviews[index];
+                          },
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 30),
+                        child: TextField(
+                          onChanged: (value) => _review = value,
+                          controller: _controller,
+                          decoration: kdecorateInput(
+                            hint: "Add a Review",
+                            suffix: FlatButton(
+                              onPressed: () {
+                                setState(() async {
+                                  var response = await Network.review(
+                                      _review,
+                                      widget.courseId,
+                                      Provider.of<User>(context, listen: false)
+                                          .id);
+                                  _controller.clear();
+                                  if (response['response'] == 'added')
+                                    updateScreen(response);
+                                });
+                              },
+                              child: Icon(Icons.send, color: KBlue),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+              );
+            }));
   }
 }

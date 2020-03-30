@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:AUIS_classroom/components/Dep.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
 final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
@@ -23,6 +25,8 @@ Future _send(String link) async {
       print(response.statusCode);
     }
   } catch (e) {
+      AlertDialog();
+    
     print(e);
   }
 }

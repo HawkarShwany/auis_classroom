@@ -18,7 +18,7 @@ class Comment extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            name+":",
+            name+" :",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           Container(

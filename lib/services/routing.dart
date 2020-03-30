@@ -16,7 +16,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AdminHomeScreen.id:
       return MaterialPageRoute(builder: (context) => AdminHomeScreen());
     case CourseScreen.id:
-      return MaterialPageRoute(builder: (context) => CourseScreen());
+    var args = settings.arguments;
+      return MaterialPageRoute(builder: (context) => CourseScreen(args));
     case AddCourseScreen.id:
       return MaterialPageRoute(builder: (context) => AddCourseScreen());
     case FavoriteCourseScreen.id:

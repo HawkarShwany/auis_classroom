@@ -7,8 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'FileTile.dart';
 
 class AdminFiles extends StatefulWidget {
-  AdminFiles(this.files, this.courseId);
-  final files;
+  AdminFiles(this.courseId);
   final courseId;
   @override
   _FilesState createState() => _FilesState();
@@ -24,9 +23,10 @@ class _FilesState extends State<AdminFiles> {
   }
 
   void updateScreen(dynamic response) async {
-    if (response['response'] == 'file deleted' || response['response'] == 'file uploaded') {
+    if (response['response'] == 'file deleted' ||
+        response['response'] == 'file uploaded') {
       var files = await Network.getFiles(widget.courseId);
-      
+
       setState(() {
         addFiles(files);
       });
@@ -53,46 +53,43 @@ class _FilesState extends State<AdminFiles> {
         ),
       );
     }
-    setState(() {
-      
-    });
+    // setState(() {});
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    addFiles(widget.files);
-  }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.files);
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: fileslist.length,
-              itemBuilder: (context, index) {
-                return fileslist[index];
+    return FutureBuilder(
+      future: Network.getFiles(widget.courseId),
+      builder: (context, snapshot) {
+      if (!snapshot.hasData) return CircularProgressIndicator();
+      addFiles(snapshot.data);
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: fileslist.length,
+                itemBuilder: (context, index) {
+                  return fileslist[index];
+                },
+              ),
+            ),
+            FloatingActionButton(
+              child: Icon(
+                Icons.file_upload,
+                color: KPrimaryColor,
+              ),
+              onPressed: () async {
+                file = await FilePicker.getFile();
+                var response = await Network.addFile(file, widget.courseId);
+                updateScreen(response);
               },
             ),
-          ),
-          FloatingActionButton(
-            child: Icon(
-              Icons.file_upload,
-              color: KPrimaryColor,
-            ),
-            onPressed: () async {
-              file = await FilePicker.getFile();
-              var response =await Network.addFile(file, widget.courseId);
-              updateScreen(response);
-            },
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }

@@ -9,9 +9,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'Admin_CommentCard.dart';
 
 class AdminLectures extends StatefulWidget {
-  final data;
   final courseId;
-  AdminLectures(this.data, this.courseId);
+  AdminLectures(this.courseId);
 
   @override
   _LecturesState createState() => _LecturesState();
@@ -34,7 +33,7 @@ class _LecturesState extends State<AdminLectures> {
         backgroundColor: KSecondaryColor, content: Text(response['response'])));
   }
 
-  updateScreen()async{
+  updateScreen() async {
     var newComments = await Network.getCourseLecture(widget.courseId);
     setState(() {
       addComments(newComments);
@@ -46,10 +45,11 @@ class _LecturesState extends State<AdminLectures> {
   }
 
   void addComments(var data) {
+    comments.removeRange(0, comments.length);
     for (var i = 0; i < data['commentcount']; i++) {
       comments.add(
         AdminComment(
-          data['comments'][i]['studentId'],
+          data['comments'][i]['fname'] + ' ' + data['comments'][i]['lname'],
           data['comments'][i]['comment'],
           data['comments'][i]['commentId'],
           deleteComment,
@@ -115,120 +115,121 @@ class _LecturesState extends State<AdminLectures> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    addLectures(widget.data);
-    addComments(widget.data);
-    index = lectures.length > 0 ? 0 : -1;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: IndexedStack(
-                index: index,
-                children: lectures,
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: FutureBuilder(
+          future: Network.getCourseLecture(widget.courseId),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return CircularProgressIndicator();
+            addLectures(snapshot.data);
+            addComments(snapshot.data);
+            index = lectures.length > 0 ? 0 : -1;
+            return Column(
               children: <Widget>[
-                RaisedButton(
-                  color: KBlue,
-                  onPressed: () {
-                    addVideo().show();
-                  },
-                  child: Text(
-                    "Add",
-                    style: TextStyle(
-                      color: Colors.white,
+                Container(
+                  margin: EdgeInsets.only(left: 30, right: 30, top: 30),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: IndexedStack(
+                      index: index,
+                      children: lectures,
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (lectures.length > 0) {
-                        if (index == 0) {
-                          index = lectures.length - 1;
-                        } else {
-                          index--;
-                        }
-                      }
-                    });
-                  },
-                  child: Icon(
-                    Icons.arrow_left,
-                    size: 35,
-                    color: KBlue,
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      RaisedButton(
+                        color: KBlue,
+                        onPressed: () {
+                          addVideo().show();
+                        },
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (lectures.length > 0) {
+                              if (index == 0) {
+                                index = lectures.length - 1;
+                              } else {
+                                index--;
+                              }
+                            }
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_left,
+                          size: 35,
+                          color: KBlue,
+                        ),
+                      ),
+                      Text((index + 1).toString() +
+                          "/" +
+                          lectures.length.toString()),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (lectures.length > 0) {
+                                if (index == lectures.length - 1) {
+                                  index = 0;
+                                } else {
+                                  index++;
+                                }
+                              }
+                            });
+                          },
+                          child: Icon(
+                            Icons.arrow_right,
+                            size: 35,
+                            color: KBlue,
+                          )),
+                      RaisedButton(
+                        onPressed: () {
+                          deleteVideo(lectures[index].getId);
+                        },
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text((index + 1).toString() + "/" + lectures.length.toString()),
-                GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (lectures.length > 0) {
-                          if (index == lectures.length - 1) {
-                            index = 0;
-                          } else {
-                            index++;
-                          }
-                        }
-                      });
-                    },
-                    child: Icon(
-                      Icons.arrow_right,
-                      size: 35,
-                      color: KBlue,
-                    )),
-                RaisedButton(
-                  onPressed: () {
-                    deleteVideo(lectures[index].getId);
-                  },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(
-                      color: Colors.white,
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.white),
                     ),
                   ),
+                  child: Text(
+                    'comments',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
+                Expanded(
+                    child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: comments.length,
+                  itemBuilder: (context, index) {
+                    return comments[index];
+                  },
+                )),
               ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white),
-              ),
-            ),
-            child: Text(
-              'comments',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Expanded(
-              child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              return comments[index];
-            },
-          )),
-        ],
-      ),
+            );
+          }),
     );
   }
 }
