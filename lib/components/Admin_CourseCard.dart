@@ -54,11 +54,20 @@ class _CourseCardState extends State<AdminCourseCard> {
           RaisedButton(
             onPressed: () async {
               // use the courseID
+              var details = await Network.getCourseDetail(widget.courseID);
+              var lectures = await Network.getCourseLecture(widget.courseID);
+              var files = await Network.getFiles(widget.courseID);
+              var reviews = await Network.getReviews(widget.courseID);
+              var insights = await Network.getInsights(widget.courseID);
 
-              Navigator.pushNamed(
-                context,
-                AdminCourseScreen.id, arguments: widget.courseID
-              );
+              Navigator.pushNamed(context, AdminCourseScreen.id, arguments: [
+                widget.courseID,
+                details,
+                lectures,
+                files,
+                reviews,
+                insights,
+              ]);
             },
             child: Text(
               "Edit",

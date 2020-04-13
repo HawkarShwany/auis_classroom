@@ -92,7 +92,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   ),
                   TextFormField(
                     validator: (value) {
-                      if (value.isEmpty ) {
+                      if (value.isEmpty) {
                         return '* this feild can not be empty';
                       }
                       return null;

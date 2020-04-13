@@ -1,49 +1,68 @@
 import 'package:AUIS_classroom/constants.dart';
-import 'package:AUIS_classroom/services/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Video extends StatelessWidget {
-  Video(this.url, this._id,);
+  Video(
+    this.name,
+    this.url,
+    this._id,
+  );
+  final name;
   final String url;
   final _id;
-  bool isAdmin;
   get getId => _id;
 
   YoutubePlayerController _controller;
   @override
   Widget build(BuildContext context) {
-    isAdmin = Provider.of<User>(context).isAdmin;
     _controller = YoutubePlayerController(
         initialVideoId: YoutubePlayer.convertUrlToId(url),
         flags: YoutubePlayerFlags(
           autoPlay: false,
           controlsVisibleAtStart: true,
         ));
-    if (isAdmin) {
-      return adminVideo();
+    if (kIsWeb) {
+      return web();
     } else {
-      return studentVideo();
+      return mobileVideo();
     }
   }
 
-  Widget adminVideo() {
+  Widget web() {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: YoutubePlayer(
-        controller: _controller,
+      child: Center(
+        child: FlatButton(
+          onPressed: () => openUrl(),
+          child: Text(
+            name,
+            style: TextStyle(color: KBlue),
+          ),
+        ),
       ),
     );
   }
 
-  Widget studentVideo() {
+  Widget mobileVideo() {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: YoutubePlayer(
+      child:
+          //   apiKey: 'AIzaSyCHk9Yw79jjnN3wqd4JTXD4MsN0JWzpA-c',
+          YoutubePlayer(
         controller: _controller,
       ),
     );
+  }
+  
+  void openUrl()async{
+
+    if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    print('Could not launch $url');
+  }
   }
 }

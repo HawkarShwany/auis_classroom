@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/constants.dart';
@@ -7,8 +8,9 @@ import 'package:file_picker/file_picker.dart';
 import 'FileTile.dart';
 
 class AdminFiles extends StatefulWidget {
-  AdminFiles(this.courseId);
+  AdminFiles(this.data, this.courseId);
   final courseId;
+  final data;
   @override
   _FilesState createState() => _FilesState();
 }
@@ -56,40 +58,47 @@ class _FilesState extends State<AdminFiles> {
     // setState(() {});
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addFiles(widget.data);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Network.getFiles(widget.courseId),
-      builder: (context, snapshot) {
-      if (!snapshot.hasData) return CircularProgressIndicator();
-      addFiles(snapshot.data);
-      return Container(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: fileslist.length,
-                itemBuilder: (context, index) {
-                  return fileslist[index];
-                },
-              ),
-            ),
-            FloatingActionButton(
-              child: Icon(
-                Icons.file_upload,
-                color: KPrimaryColor,
-              ),
-              onPressed: () async {
-                file = await FilePicker.getFile();
-                var response = await Network.addFile(file, widget.courseId);
-                updateScreen(response);
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: fileslist.length,
+              itemBuilder: (context, index) {
+                return fileslist[index];
               },
             ),
-          ],
-        ),
-      );
-    });
+          ),
+          FloatingActionButton(
+            child: Icon(
+              Icons.file_upload,
+              color: KPrimaryColor,
+            ),
+            onPressed: () async {
+              file = await FilePicker.getFile();
+              String fileString = base64Encode(file.readAsBytesSync());
+              String filename = file.path.split('/').last;
+              String filetype = filename.split('.').last;
+              var response = await Network.addFile(
+                  fileString: fileString,
+                  filename: filename,
+                  fileType: filetype,
+                  courseId: widget.courseId);
+              updateScreen(response);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

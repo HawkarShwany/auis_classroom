@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/constants.dart';
@@ -5,11 +6,13 @@ import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/foundation.dart';
 import 'FileTile.dart';
+// import 'dart:html' as html;
 
 class Files extends StatefulWidget {
-  Files(this.courseId);
+  Files(this.data, this.courseId);
+  final data;
   final courseId;
   @override
   _FilesState createState() => _FilesState();
@@ -27,7 +30,10 @@ class _FilesState extends State<Files> {
   }
 
   void addFiles(dynamic files) {
-    filesList.removeRange(0, filesList.length);
+    if (filesList.isNotEmpty) {
+      filesList.removeRange(0, filesList.length);
+    }
+
     for (var i = 0; i < files['fileCount']; i++) {
       filesList.add(
         FileTile(
@@ -70,56 +76,71 @@ class _FilesState extends State<Files> {
     );
   }
 
+  void upload() async {
+    if (kIsWeb) {
+    } else {
+      file = await FilePicker.getFile();
+    }
+    String fileString = base64Encode(file.readAsBytesSync());
+    String filename = file.path.split('/').last;
+    String filetype = filename.split('.').last;
+    var response = await Network.addFile(
+      fileString: fileString,
+      fileType: filetype,
+      filename: filename,
+      courseId: widget.courseId,
+    );
+    updateScreen(response);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addFiles(widget.data);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Network.getFiles(widget.courseId),
-      builder: (context, snapshot) {
-      if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-      addFiles(snapshot.data);
-      return Container(
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              child: ListTile(
-                onTap: () {
-                  sort();
-                },
-                leading: Icon(
-                  Icons.sort,
-                  color: KYellow,
-                ),
-                title: Text(
-                  "Sort",
-                  style: TextStyle(color: Colors.white),
-                ),
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            child: ListTile(
+              onTap: () {
+                sort();
+              },
+              leading: Icon(
+                Icons.sort,
+                color: KYellow,
+              ),
+              title: Text(
+                "Sort",
+                style: TextStyle(color: Colors.white),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: filesList.length,
-                itemBuilder: (context, index) {
-                  return filesList[index];
-                },
-              ),
-            ),
-            FloatingActionButton(
-              child: Icon(
-                Icons.file_upload,
-                color: KPrimaryColor,
-              ),
-              onPressed: () async {
-                file = await FilePicker.getFile();
-                var response = await Network.addFile(file, widget.courseId);
-                updateScreen(response);
+          ),
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: filesList.length,
+              itemBuilder: (context, index) {
+                return filesList[index];
               },
             ),
-          ],
-        ),
-      );
-    });
+          ),
+          FloatingActionButton(
+            child: Icon(
+              Icons.file_upload,
+              color: KPrimaryColor,
+            ),
+            onPressed: () async {
+              upload();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

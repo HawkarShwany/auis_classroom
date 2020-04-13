@@ -22,6 +22,7 @@ const KBox = BoxDecoration(
 InputDecoration kdecorateInput(
     {@required String hint, Widget leadingIcon, Widget suffix}) {
   return InputDecoration(
+    
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.white),
         borderRadius: BorderRadius.all(Radius.circular(10)),

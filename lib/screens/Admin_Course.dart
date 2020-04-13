@@ -9,10 +9,21 @@ import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
 
 class AdminCourseScreen extends StatefulWidget {
-  static String id = '/AdminCourse';
+  static const String id = '/AdminCourse';
   final courseId;
-  
-  AdminCourseScreen({@required this.courseId});
+  final details;
+  final lectures;
+  final files;
+  final reviews;
+  final insights;
+
+  AdminCourseScreen(
+      {@required this.courseId,
+      @required this.details,
+      @required this.lectures,
+      @required this.files,
+      @required this.reviews,
+      @required this.insights});
   @override
   _CourseScreenState createState() => _CourseScreenState();
 }
@@ -24,13 +35,10 @@ class _CourseScreenState extends State<AdminCourseScreen> {
     //   [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]
     // );
     return SafeArea(
-          child: DefaultTabController(
+      child: DefaultTabController(
         length: 5,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          drawer: Drawer(
-            child: CustomDrawer(),
-          ),
           appBar: AppBar(
             automaticallyImplyLeading: true,
             centerTitle: true,
@@ -53,15 +61,14 @@ class _CourseScreenState extends State<AdminCourseScreen> {
           body: Container(
             child: TabBarView(
               children: [
-                AdminDetails(widget.courseId),
-                AdminLectures(widget.courseId),
-                AdminFiles(widget.courseId),
-                AdminReviews(widget.courseId),
-                Insights(widget.courseId),
+                AdminDetails(widget.details, widget.courseId),
+                AdminLectures(widget.lectures, widget.courseId),
+                AdminFiles(widget.files, widget.courseId),
+                AdminReviews(widget.reviews, widget.courseId),
+                Insights(widget.insights, widget.courseId),
               ],
             ),
           ),
-          
         ),
       ),
     );

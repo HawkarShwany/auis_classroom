@@ -74,8 +74,10 @@ class FileTile extends StatelessWidget {
             child: GestureDetector(
               onTap: ()async{
                 File file =await Network.downloadFile(id);
-                print(file);
+                print(file.path);
+
                 OpenFile.open(file.path);
+                
                 // print('file pathh:   '+file.path);
               },
               child: Text(

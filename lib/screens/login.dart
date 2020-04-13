@@ -10,6 +10,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// flutter run -d chrome --web-hostname localhost --web-port 5000
+
 class Login extends StatefulWidget {
   static const String id = '/login';
   @override
@@ -20,6 +22,7 @@ class _LoginState extends State<Login> {
   final _loginformKey = GlobalKey<FormState>();
   final _registerformKey = GlobalKey<FormState>();
   final _adminformKey = GlobalKey<FormState>();
+  final _resetFormKey = GlobalKey<FormState>();
   String registerEmail;
   String registerPassword;
   String registerFname;
@@ -33,6 +36,7 @@ class _LoginState extends State<Login> {
   bool _adminIncorrectIsvisible = false;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseAuth _auth = FirebaseAuth.instance;
+  String _resetEmail;
 
   Future<void> _handleSignIn() async {
     try {
@@ -50,8 +54,11 @@ class _LoginState extends State<Login> {
       String email = user.email;
       String password = 'none';
       var response = await Network.register(id, fname, lname, email, password);
-      if (response['registered'] == 'true' ||
-          response['registered'] == 'duplicate') {
+      if (response['registered'] == 'true') {
+        login(id, password);
+      } else if (response['registered'] == 'duplicate') {
+        id = response['id'];
+        password = response['password'];
         login(id, password);
       }
     } catch (error) {
@@ -113,141 +120,212 @@ class _LoginState extends State<Login> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Flexible(
-                  child: Text(
-                    "AUIS Classroom",
-                    style: TextStyle(color: Colors.white, fontSize: 30),
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: 400,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    child: Text(
+                      "AUIS Classroom",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    ),
                   ),
-                ),
 
-                // the box of inputs
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: KSecondaryColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+                  // the box of inputs
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: KSecondaryColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
                     ),
-                  ),
-                  child: Form(
-                    key: _loginformKey,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "Login",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return '* Please enter text here';
-                            }
-                            return null;
-                          },
-                          decoration: kdecorateInput(hint: 'ID'),
-                          enableSuggestions: true,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.emailAddress,
-                          autofocus: false,
-                          onChanged: (value) {
-                            loginId = value;
-                          },
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return '* Please enter text here';
-                            }
-                            return null;
-                          },
-                          decoration: kdecorateInput(hint: 'Password'),
-                          enableSuggestions: true,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.visiblePassword,
-                          autofocus: false,
-                          onChanged: (value) {
-                            loginPassword = value;
-                          },
-                        ),
-                        Visibility(
-                            visible: _isVisible,
+                    child: Form(
+                      key: _loginformKey,
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return '* Please enter text here';
+                              }
+                              return null;
+                            },
+                            decoration: kdecorateInput(hint: 'ID'),
+                            enableSuggestions: true,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.emailAddress,
+                            autofocus: false,
+                            onChanged: (value) {
+                              loginId = value;
+                            },
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextFormField(
+                            obscureText: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return '* Please enter text here';
+                              }
+                              return null;
+                            },
+                            decoration: kdecorateInput(hint: 'Password'),
+                            enableSuggestions: true,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.visiblePassword,
+                            autofocus: false,
+                            onChanged: (value) {
+                              loginPassword = value;
+                            },
+                          ),
+                          Visibility(
+                              visible: _isVisible,
+                              child: Text(
+                                "ID or password is incorrect",
+                                style: TextStyle(color: Colors.red),
+                              )),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              resetPassword();
+                            },
                             child: Text(
-                              "ID or password is incorrect",
-                              style: TextStyle(color: Colors.red),
-                            )),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            RaisedButton(
-                              child: Text(
-                                "login",
-                                style: KPillTextStyle,
+                              'Forgot your password?',
+                              style: TextStyle(color: KBlue),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              RaisedButton(
+                                child: Text(
+                                  "login",
+                                  style: KPillTextStyle,
+                                ),
+                                onPressed: () async {
+                                  if (_loginformKey.currentState.validate()) {
+                                    login(loginId, loginPassword);
+                                  }
+                                },
                               ),
-                              onPressed: () async {
-                                if (_loginformKey.currentState.validate()) {
-                                  login(loginId, loginPassword);
-                                }
-                              },
-                            ),
-                            Text(
-                              'or',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            RaisedButton(
-                              child: Text(
-                                "register",
-                                style: KPillTextStyle,
+                              Text(
+                                'or',
+                                style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {
-                                register();
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        GoogleSignInButton(
-                          onPressed: () {
-                            _handleSignIn();
-                          },
-                        )
-                      ],
+                              RaisedButton(
+                                child: Text(
+                                  "register",
+                                  style: KPillTextStyle,
+                                ),
+                                onPressed: () {
+                                  register();
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          GoogleSignInButton(
+                            onPressed: () {
+                              _handleSignIn();
+                            },
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Text('Admins'),
-                FlatButton(
-                  onPressed: () {
-                    adminLoginPopup();
-                  },
-                  child: Text(
-                    'login here',
-                    style: TextStyle(color: KBlue),
-                  ),
-                )
-              ],
+                  Text('Admins'),
+                  FlatButton(
+                    onPressed: () {
+                      adminLoginPopup();
+                    },
+                    child: Text(
+                      'login here',
+                      style: TextStyle(color: KBlue),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void resetPassword() {
+    Alert(
+        context: context,
+        title: 'Enter you email address to recieve and email',
+        style: AlertStyle(
+          backgroundColor: KSecondaryColor,
+          titleStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),
+        ),
+        content: Form(
+          key: _resetFormKey,
+          child: TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return '* Please enter your email';
+              }
+              return null;
+            },
+            decoration: kdecorateInput(hint: 'Email'),
+            enableSuggestions: true,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.emailAddress,
+            autofocus: true,
+            onChanged: (value) {
+              _resetEmail = value;
+            },
+          ),
+        ),
+        buttons: [
+          DialogButton(
+              child: Text('send'),
+              onPressed: () {
+                if (_resetFormKey.currentState.validate()) {
+                  sendEmail(_resetEmail);
+                  Navigator.pop(context);
+                }
+              })
+        ]).show();
+  }
+
+  void sendEmail(String email) async {
+    var response = await Network.sendEmail(email);
+    Alert(
+        context: context,
+        title: response['response'],
+        style: AlertStyle(
+          backgroundColor: KSecondaryColor,
+          titleStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),
+        ),
+        buttons: []).show();
   }
 
   void adminLoginPopup() {

@@ -11,7 +11,11 @@ import 'package:AUIS_classroom/constants.dart';
 class CourseScreen extends StatefulWidget {
   static const String id = '/course';
   final courseId;
-  CourseScreen(this.courseId);
+  final details;
+  final lectures;
+  final files;
+  final reviews;
+  CourseScreen({this.courseId, this.details, this.lectures, this.files, this.reviews});
   @override
   _CourseScreenState createState() => _CourseScreenState();
 }
@@ -50,10 +54,10 @@ class _CourseScreenState extends State<CourseScreen> {
         body: Container(
           child: TabBarView(
             children: [
-              Details(widget.courseId),
-              Lectures(widget.courseId),
-              Files(widget.courseId),
-              Reviews(widget.courseId),
+              Details(widget.details, widget.courseId),
+              Lectures(widget.lectures, widget.courseId),
+              Files(widget.files, widget.courseId),
+              Reviews(widget.reviews, widget.courseId),
             ],
           ),
         ),

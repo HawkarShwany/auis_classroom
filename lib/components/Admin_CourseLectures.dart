@@ -1,16 +1,15 @@
 import 'package:AUIS_classroom/components/Video.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
-import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'Admin_CommentCard.dart';
 
 class AdminLectures extends StatefulWidget {
   final courseId;
-  AdminLectures(this.courseId);
+  final data;
+  AdminLectures(this.data, this.courseId);
 
   @override
   _LecturesState createState() => _LecturesState();
@@ -22,6 +21,7 @@ class _LecturesState extends State<AdminLectures> {
   String comment;
   TextEditingController _controller = TextEditingController();
   int index;
+  bool isWeb ;
 
   void deleteComment(dynamic commentId) async {
     var response = await Network.deleteComment(commentId);
@@ -62,6 +62,7 @@ class _LecturesState extends State<AdminLectures> {
     for (var i = 0; i < data['vidcount']; i++) {
       lectures.add(
         Video(
+          data['videos'][i]['name'],
           data['videos'][i]['path'],
           data['videos'][i]['id'],
         ),
@@ -115,121 +116,178 @@ class _LecturesState extends State<AdminLectures> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: FutureBuilder(
-          future: Network.getCourseLecture(widget.courseId),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return CircularProgressIndicator();
-            addLectures(snapshot.data);
-            addComments(snapshot.data);
-            index = lectures.length > 0 ? 0 : -1;
-            return Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: IndexedStack(
-                      index: index,
-                      children: lectures,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: KBlue,
-                        onPressed: () {
-                          addVideo().show();
-                        },
-                        child: Text(
-                          "Add",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (lectures.length > 0) {
-                              if (index == 0) {
-                                index = lectures.length - 1;
-                              } else {
-                                index--;
-                              }
-                            }
-                          });
-                        },
-                        child: Icon(
-                          Icons.arrow_left,
-                          size: 35,
-                          color: KBlue,
-                        ),
-                      ),
-                      Text((index + 1).toString() +
-                          "/" +
-                          lectures.length.toString()),
-                      GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (lectures.length > 0) {
-                                if (index == lectures.length - 1) {
-                                  index = 0;
-                                } else {
-                                  index++;
-                                }
-                              }
-                            });
-                          },
-                          child: Icon(
-                            Icons.arrow_right,
-                            size: 35,
-                            color: KBlue,
-                          )),
-                      RaisedButton(
-                        onPressed: () {
-                          deleteVideo(lectures[index].getId);
-                        },
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  child: Text(
-                    'comments',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Expanded(
-                    child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: comments.length,
-                  itemBuilder: (context, index) {
-                    return comments[index];
-                  },
-                )),
-              ],
-            );
-          }),
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addLectures(widget.data);
+    addComments(widget.data);
+    index = lectures.length > 0 ? 0 : -1;
+  }
+
+  Widget moblieView() {
+    return SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height - 150,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: <Widget>[
+            addLecture(),
+            commentHeader(),
+            showComments(),
+          ],
+        ),
+      ),
     );
   }
+
+  Widget webView() {
+    return SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height - 150,
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Container(
+                width:  MediaQuery.of(context).size.width / 2,
+                child: addLecture(),
+              ),
+            Container(
+              width: MediaQuery.of(context).size.width / 2,
+              child: Column(
+                children: <Widget>[
+                  commentHeader(),
+                  showComments(),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget addLecture() {
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 30, right: 30, top: 30),
+          child: AspectRatio(
+            aspectRatio: 3,
+            child: IndexedStack(
+              index: index,
+              children: lectures,
+            ),
+          ),
+        ),
+        Container(
+          height: 60,
+          margin: EdgeInsets.symmetric(horizontal: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              RaisedButton(
+                color: KBlue,
+                onPressed: () {
+                  addVideo().show();
+                },
+                child: Text(
+                  "Add",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (lectures.length > 0) {
+                      if (index == 0) {
+                        index = lectures.length - 1;
+                      } else {
+                        index--;
+                      }
+                    }
+                  });
+                },
+                child: Icon(
+                  Icons.arrow_left,
+                  size: 35,
+                  color: KBlue,
+                ),
+              ),
+              Text((index + 1).toString() + "/" + lectures.length.toString()),
+              GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (lectures.length > 0) {
+                        if (index == lectures.length - 1) {
+                          index = 0;
+                        } else {
+                          index++;
+                        }
+                      }
+                    });
+                  },
+                  child: Icon(
+                    Icons.arrow_right,
+                    size: 35,
+                    color: KBlue,
+                  )),
+              RaisedButton(
+                onPressed: () {
+                  deleteVideo(lectures[index].getId);
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget commentHeader() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.white),
+        ),
+      ),
+      child: Text(
+        'comments',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget showComments() {
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: comments.length,
+        itemBuilder: (context, index) {
+          return comments[index];
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    isWeb =
+    MediaQuery.of(context).size.width > MediaQuery.of(context).size.height ? true: false;
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: isWeb ? webView() : moblieView(),
+    );
+  }
+
 }

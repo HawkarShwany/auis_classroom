@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
-final getUrl = "http://192.168.1.9:8081/capstone/web/web-service.php?action=";
-final postUrl = "http://192.168.1.9:8081/capstone/web/login.php";
+final localhost = 'http://192.168.1.9:8081/capstone/web/';
+final website = 'https://hawkarshwany.com/capstone/';
+final getUrl = localhost+"web-service.php?action=";
+final postUrl = website+"login.php";
 
 // add socketExeption
 
@@ -28,6 +29,24 @@ Future _send(String link) async {
       AlertDialog();
     
     print(e);
+  }
+}
+Future sendEmail(String email)async{
+  try {
+    http.Response response = await http.post(postUrl, body: {
+      'action': 'sendEmail',
+      'email': email,
+    });
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      print("from network 2: " + data.toString());
+      return data;
+    } else {
+      print(response.statusCode);
+      
+    }
+  }catch(e){
+    print(e.toString());
   }
 }
 
@@ -128,7 +147,7 @@ String appDocPath = appDocDir.path;
   File file;
   try {
     http.Response response = await http.post(
-      "http://192.168.1.9:8081/capstone/web/upload.php",
+      localhost+"upload.php",
       body: {
         'action': 'downloadFile',
         'id': fileId,
@@ -140,7 +159,7 @@ String appDocPath = appDocDir.path;
       file.writeAsBytesSync(base64Decode(data['file'].toString()));
      return file;
     } else {
-      print("bad response:       " + response.statusCode.toString());
+      print("bad response:       " + response.toString());
       return file;
     }
   } catch (e) {
@@ -149,19 +168,16 @@ String appDocPath = appDocDir.path;
   }
 }
 
-Future addFile(File file, String courseId) async {
-  String filename= file.path.split('/').last;
-  String filetype = filename.split('.').last;
+Future addFile({@required String fileString, String filename, String fileType, @required String courseId}) async {
   try {
-    String fileString = base64Encode(file.readAsBytesSync());
     print('trying............');
     http.Response response = await http.post(
-      "http://192.168.1.9:8081/capstone/web/upload.php",
+      localhost+"upload.php",
       body: {
         'action': 'uploadFile',
         'file': fileString,
-        'name': filename,
-        'type': filetype,
+        'name': filename == null? 'newfile':filename,
+        'type': fileType == null? 'file':fileType,
         'courseId': courseId
       },
     );
@@ -343,8 +359,11 @@ Future adminLogin(String email, String password) async {
 }
 
 Future login(String id, String password) async {
+  Map<String,String> headers = {
+"Access-Control-Allow-Origin":"*"};
   try {
-    http.Response response = await http.post(postUrl, body: {
+    http.Response response = await http.post(postUrl,
+    headers: headers, body: {
       'action': 'studentlogin',
       'id': id,
       'password': password,
