@@ -3,7 +3,6 @@ import 'package:AUIS_classroom/components/Video.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/services/user.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -164,7 +163,7 @@ class _LecturesState extends State<Lectures> {
 
   Widget showComments() {
     return Expanded(
-          child: ListView.builder(
+      child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: comments.length,
@@ -179,7 +178,11 @@ class _LecturesState extends State<Lectures> {
   Widget addComment() {
     return Container(
       width: 400,
-      margin: EdgeInsets.symmetric(horizontal: 30),
+      height: 70,
+      padding: EdgeInsets.only(
+        top: 10,
+      ),
+      margin: EdgeInsets.only(left: 30, right: 30, bottom: 0),
       child: TextFormField(
         autocorrect: false,
         controller: _controller,
@@ -213,7 +216,7 @@ class _LecturesState extends State<Lectures> {
   Widget moblieView() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - 150,
+        height: MediaQuery.of(context).size.height - 200,
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: <Widget>[
@@ -231,7 +234,7 @@ class _LecturesState extends State<Lectures> {
   Widget webView() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - 150,
+        height: MediaQuery.of(context).size.height - 200,
         width: MediaQuery.of(context).size.width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -260,11 +263,12 @@ class _LecturesState extends State<Lectures> {
   @override
   Widget build(BuildContext context) {
     isWeb =
-    MediaQuery.of(context).size.width > MediaQuery.of(context).size.height ? true: false;
+        MediaQuery.of(context).size.width > MediaQuery.of(context).size.height
+            ? true
+            : false;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: isWeb ? webView() : moblieView(),
     );
   }
-  
 }

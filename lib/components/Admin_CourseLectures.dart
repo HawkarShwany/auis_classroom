@@ -127,7 +127,7 @@ class _LecturesState extends State<AdminLectures> {
   Widget moblieView() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - 150,
+        height: MediaQuery.of(context).size.height - 135,
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: <Widget>[
@@ -150,6 +150,7 @@ class _LecturesState extends State<AdminLectures> {
           children: <Widget>[
             Container(
                 width:  MediaQuery.of(context).size.width / 2,
+                height: 300,
                 child: addLecture(),
               ),
             Container(
@@ -169,22 +170,21 @@ class _LecturesState extends State<AdminLectures> {
 
   Widget addLecture() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
+          height: 150,
           margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-          child: AspectRatio(
-            aspectRatio: 3,
-            child: IndexedStack(
-              index: index,
-              children: lectures,
-            ),
+          child: IndexedStack(
+            index: index,
+            children: lectures,
           ),
         ),
         Container(
           height: 60,
           margin: EdgeInsets.symmetric(horizontal: 30),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RaisedButton(
                 color: KBlue,

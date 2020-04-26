@@ -216,7 +216,7 @@ class _AdminDetailsState extends State<AdminDetails> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   Container(
-                    width: 250,
+                    width: 300,
                     child: DropdownButtonFormField(
                       decoration: kdecorateInput(hint: null),
                       value: department,

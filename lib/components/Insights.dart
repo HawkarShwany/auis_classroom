@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
@@ -55,8 +56,7 @@ class _InsightsState extends State<Insights> {
     parseData(widget.data);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget mobileView() {
     return Container(
       child: SingleChildScrollView(
         child: Container(
@@ -98,5 +98,17 @@ class _InsightsState extends State<Insights> {
         ),
       ),
     );
+  }
+
+Widget webView(){
+  return Container();
+}
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return webView();
+    } else {
+      return mobileView();
+    }
   }
 }

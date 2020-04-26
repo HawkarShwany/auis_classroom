@@ -8,7 +8,7 @@ import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Reviews extends StatefulWidget {
   final courseId;
-  final data;
+  var data;
   Reviews(this.data, this.courseId);
   @override
   _ReviewsState createState() => _ReviewsState();
@@ -24,6 +24,7 @@ class _ReviewsState extends State<Reviews> {
   void updateScreen(dynamic response) async {
     var newReviews = await Network.getReviews(widget.courseId);
     setState(() {
+      widget.data = newReviews;
       addReviews(newReviews);
       _rating = double.parse(newReviews['rate']);
       _numberOfVotes = newReviews['votes'];
@@ -69,7 +70,7 @@ class _ReviewsState extends State<Reviews> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height - 150,
+          height: MediaQuery.of(context).size.height - 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -114,7 +115,9 @@ class _ReviewsState extends State<Reviews> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
+                height: 70,
+                padding: EdgeInsets.only(top: 10, ),
+                margin: EdgeInsets.only(left: 30, right: 30, bottom: 0),
                 child: TextField(
                   onChanged: (value) => _review = value,
                   controller: _controller,

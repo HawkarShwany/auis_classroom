@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'FileTile.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'dart:html' as html;
 
 class Files extends StatefulWidget {
@@ -76,14 +77,27 @@ class _FilesState extends State<Files> {
     );
   }
 
+  void openUrl(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
   void upload() async {
     if (kIsWeb) {
+      String url = 'http://192.168.1.9:8081/capstone/web/upload.php?courseId=' +
+          widget.courseId;
+      openUrl(url);
     } else {
       file = await FilePicker.getFile();
     }
-    String fileString = base64Encode(file.readAsBytesSync());
     String filename = file.path.split('/').last;
     String filetype = filename.split('.').last;
+    String fileString =
+        getPrefix(filetype) + base64Encode(file.readAsBytesSync());
+
     var response = await Network.addFile(
       fileString: fileString,
       fileType: filetype,
@@ -91,6 +105,23 @@ class _FilesState extends State<Files> {
       courseId: widget.courseId,
     );
     updateScreen(response);
+  }
+
+  String getPrefix(String filetype) {
+    switch (filetype) {
+      case 'ppt':
+        return 'data:application/vnd.ms-powerpoint;base64,';
+      case 'pdf':
+        return 'data:application/pdf;base64,';
+      case 'jpg':
+        return 'data:image/jpeg;base64,';
+      case 'pptx':
+        return 'data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,';
+        case 'docx':
+        return 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,';
+      default:
+        return 'uknown,';
+    }
   }
 
   @override

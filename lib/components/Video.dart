@@ -56,13 +56,12 @@ class Video extends StatelessWidget {
       ),
     );
   }
-  
-  void openUrl()async{
 
+  void openUrl() async {
     if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    print('Could not launch $url');
-  }
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
   }
 }

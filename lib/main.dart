@@ -1,7 +1,3 @@
-import 'package:AUIS_classroom/screens/Admin_AddCourse.dart';
-import 'package:AUIS_classroom/screens/Admin_Home.dart';
-import 'package:AUIS_classroom/screens/FavoriteScreen.dart';
-import 'package:AUIS_classroom/screens/Home.dart';
 import 'package:AUIS_classroom/screens/login.dart';
 import 'package:AUIS_classroom/services/routing.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'constants.dart';
 import 'services/user.dart';
-import 'package:AUIS_classroom/screens/Course.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    final textTheme = Theme.of(context).textTheme;
     return ChangeNotifierProvider(
       create: (context) => User(),
       child: MaterialApp(
@@ -28,10 +24,22 @@ class MyApp extends StatelessWidget {
           floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: KBlue,
           ),
-          textTheme: TextTheme(
-            bodyText1: TextStyle(color: Colors.white, ),
-            bodyText2: TextStyle(color: Colors.white,),
-            button: TextStyle(color: Colors.white),
+          textTheme: GoogleFonts.merriweatherTextTheme(textTheme).copyWith(
+            bodyText1:
+                GoogleFonts.playfairDisplay(textStyle: textTheme.bodyText1).copyWith(
+              color: Colors.white,
+            ),
+            headline1: GoogleFonts.sourceSansPro(textStyle: textTheme.bodyText1)
+                .copyWith(
+              color: Colors.white,
+            ),
+            bodyText2: GoogleFonts.sourceSansPro(textStyle: textTheme.bodyText1)
+                .copyWith(
+              color: Colors.white,
+            ),
+            button: GoogleFonts.merriweather(textStyle: textTheme.bodyText1).copyWith(
+              color: Colors.white,
+            ),
           ),
           buttonTheme: ButtonThemeData(
             buttonColor: KBlue,
@@ -48,7 +56,6 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: Login.id,
         onGenerateRoute: generateRoute,
-        
       ),
     );
   }

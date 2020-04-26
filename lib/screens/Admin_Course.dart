@@ -2,7 +2,6 @@ import 'package:AUIS_classroom/components/Admin_CourseDetails.dart';
 import 'package:AUIS_classroom/components/Admin_CourseFiles.dart';
 import 'package:AUIS_classroom/components/Admin_CourseLectures.dart';
 import 'package:AUIS_classroom/components/Admin_CourseReview.dart';
-import 'package:AUIS_classroom/components/Custom_Drawer.dart';
 import 'package:AUIS_classroom/components/Insights.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

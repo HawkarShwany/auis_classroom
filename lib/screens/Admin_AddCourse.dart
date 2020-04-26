@@ -155,7 +155,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     style: TextStyle(fontSize: 20, height: 3),
                   ),
                   Container(
-                    width: 250,
+                    // width: 300,
                     child: DropdownButtonFormField(
                         value: department,
                         decoration: kdecorateInput(hint: null),

@@ -59,10 +59,12 @@ class _LoginState extends State<Login> {
       } else if (response['registered'] == 'duplicate') {
         id = response['id'];
         password = response['password'];
+        print(id);
+        print(password);
         login(id, password);
       }
     } catch (error) {
-      print("error: " + error.toString());
+      print("error: " +  error.toString());
     }
   }
 
@@ -303,6 +305,7 @@ class _LoginState extends State<Login> {
         ),
         buttons: [
           DialogButton(
+            color: KBlue,
               child: Text('send'),
               onPressed: () {
                 if (_resetFormKey.currentState.validate()) {
@@ -397,6 +400,7 @@ class _LoginState extends State<Login> {
         ),
         buttons: [
           DialogButton(
+            color: KBlue,
               child: Text(
                 "login",
                 // style: KPillTextStyle,
@@ -536,6 +540,7 @@ class _LoginState extends State<Login> {
         ),
         buttons: [
           DialogButton(
+            
             color: KBlue,
             radius: BorderRadius.all(Radius.circular(10)),
             child: Text(

@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 final localhost = 'http://192.168.1.9:8081/capstone/web/';
 final website = 'https://hawkarshwany.com/capstone/';
 final getUrl = localhost+"web-service.php?action=";
-final postUrl = website+"login.php";
+final postUrl = website +"login.php";
 
 // add socketExeption
 
@@ -155,8 +155,10 @@ String appDocPath = appDocDir.path;
     );
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
+      print('data:'+data.toString());
        file = File(appDocPath+ data['name'].toString());
-      file.writeAsBytesSync(base64Decode(data['file'].toString()));
+      file.writeAsBytesSync(base64Decode(data['file'].toString().split(',').last));
+      print('path: '+file.path.toString());
      return file;
     } else {
       print("bad response:       " + response.toString());
