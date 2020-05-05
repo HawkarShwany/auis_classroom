@@ -55,7 +55,7 @@ class FileTile extends StatelessWidget {
           },
           child: Icon(
             Icons.delete_forever,
-            color: KPrimaryColor,
+            color: KSecondaryColor,
           ));
     }
   }
@@ -72,10 +72,11 @@ class FileTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: KSecondaryColor,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(10)),
+        boxShadow: kShadow
       ),
-      margin: EdgeInsets.only(left: 30, right: 30, top: 30),
+      margin: EdgeInsets.only(left: 30, right: 30, top: 10),
       padding: EdgeInsets.all(20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,7 +99,6 @@ class FileTile extends StatelessWidget {
               child: Text(
                 name,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

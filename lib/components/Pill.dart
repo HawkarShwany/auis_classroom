@@ -12,6 +12,7 @@ class Pill extends StatelessWidget {
       onPressed: () {
         onTap();
       },
+      hoverColor: Colors.transparent,
       child: Container(
         // margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),

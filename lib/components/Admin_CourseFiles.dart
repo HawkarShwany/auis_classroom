@@ -137,6 +137,7 @@ class _FilesState extends State<AdminFiles> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 20),
       child: Column(
         children: <Widget>[
           Expanded(

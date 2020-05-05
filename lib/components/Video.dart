@@ -32,9 +32,9 @@ class Video extends StatelessWidget {
   }
 
   Widget web() {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Center(
+    return Center(
+      child: AspectRatio(
+        aspectRatio: 16 / 4,
         child: FlatButton(
           onPressed: () => openUrl(),
           child: Text(

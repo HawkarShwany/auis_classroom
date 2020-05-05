@@ -3,6 +3,7 @@ import 'package:AUIS_classroom/components/Video.dart';
 import 'package:AUIS_classroom/constants.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/services/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -69,18 +70,17 @@ class _LecturesState extends State<Lectures> {
       );
     } else {
       return Container(
-        width: 400,
-        child: Column(
+       child: Column(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(left: 30, right: 30, top: 30),
               child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: IndexedStack(
-                  index: index,
-                  children: lectures,
+                  aspectRatio: kIsWeb? 4: 16 / 9,
+                  child: IndexedStack(
+                    index: index,
+                    children: lectures,
+                  ),
                 ),
-              ),
             ),
             Container(
               width: 200,
@@ -142,12 +142,11 @@ class _LecturesState extends State<Lectures> {
       // width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Colors.white),
+          bottom: BorderSide(color: Colors.black),
         ),
       ),
       child: Text(
         'comments',
-        style: TextStyle(color: Colors.white),
       ),
     );
   }

@@ -9,23 +9,23 @@ class Comment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal:30, vertical: 10),
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        color: KSecondaryColor,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(10)),
+        boxShadow: kShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             name+" :",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle( fontWeight: FontWeight.bold),
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(left: 10, top: 10),
             child: Text(
               text,
-              style: TextStyle(color: Colors.white),
             ),
           )
         ],

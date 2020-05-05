@@ -1,10 +1,7 @@
 import 'package:AUIS_classroom/screens/Admin_Course.dart';
-import 'package:AUIS_classroom/screens/Course.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
-import 'package:AUIS_classroom/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:AUIS_classroom/constants.dart';
-import 'package:provider/provider.dart';
 
 class AdminCourseCard extends StatefulWidget {
   AdminCourseCard({this.courseID, this.courseTitle});
@@ -20,11 +17,12 @@ class _CourseCardState extends State<AdminCourseCard> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: KSecondaryColor,
+        color: KPrimaryColor,
         borderRadius: BorderRadius.all(Radius.circular(10)),
+        boxShadow: kShadow
       ),
       margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +32,6 @@ class _CourseCardState extends State<AdminCourseCard> {
             style: TextStyle(
               decoration: TextDecoration.none,
               fontSize: 24,
-              color: Colors.white,
             ),
           ),
           SizedBox(
@@ -45,7 +42,6 @@ class _CourseCardState extends State<AdminCourseCard> {
             style: TextStyle(
               decoration: TextDecoration.none,
               fontSize: 14,
-              color: Colors.white,
             ),
           ),
           SizedBox(
@@ -71,9 +67,7 @@ class _CourseCardState extends State<AdminCourseCard> {
             },
             child: Text(
               "Edit",
-              style: TextStyle(
-                color: Colors.white,
-              ),
+              style: KPillTextStyle,
             ),
           ),
         ],

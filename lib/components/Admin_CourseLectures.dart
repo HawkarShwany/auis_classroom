@@ -77,8 +77,7 @@ class _LecturesState extends State<AdminLectures> {
     return Alert(
       context: context,
       style: AlertStyle(
-        titleStyle: TextStyle(color: Colors.white),
-        backgroundColor: KSecondaryColor,
+        backgroundColor: KPrimaryColor,
       ),
       // shape:RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) ,
       title: "Add a YouTube Video",
@@ -103,9 +102,10 @@ class _LecturesState extends State<AdminLectures> {
       )),
       buttons: [
         DialogButton(
+          color: KBlue,
             child: Text(
               "Add",
-              style: TextStyle(color: Colors.white),
+              style: KPillTextStyle,
             ),
             onPressed: () {
               Network.addYouTubeVideo(title, url, widget.courseId);
@@ -193,9 +193,7 @@ class _LecturesState extends State<AdminLectures> {
                 },
                 child: Text(
                   "Add",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: KPillTextStyle,
                 ),
               ),
               GestureDetector(
@@ -240,9 +238,7 @@ class _LecturesState extends State<AdminLectures> {
                 },
                 child: Text(
                   'Delete',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: KPillTextStyle,
                 ),
               ),
             ],
@@ -258,12 +254,11 @@ class _LecturesState extends State<AdminLectures> {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Colors.white),
+          bottom: BorderSide(),
         ),
       ),
       child: Text(
         'comments',
-        style: TextStyle(color: Colors.white),
       ),
     );
   }

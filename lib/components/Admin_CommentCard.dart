@@ -10,45 +10,43 @@ class AdminComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      padding: EdgeInsets.only(left: 15, top: 15, bottom: 15),
+      margin: EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: KSecondaryColor,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
+          color: KPrimaryColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: kShadow),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Flexible(
-                      child: Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   name + ":",
-                  style:
-                      TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.only(left: 10, top: 10),
                   child: Flexible(
                     child: Text(
                       text,
                       overflow: TextOverflow.clip,
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 )
               ],
             ),
           ),
-          FlatButton(
-            onPressed: () {
+          GestureDetector(
+            onTap: () {
               deleteComment(commentId);
             },
             child: Icon(
               Icons.delete_forever,
-              color: KPrimaryColor,
+              color: KSecondaryColor,
             ),
           ),
         ],

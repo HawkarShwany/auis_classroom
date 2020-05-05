@@ -33,9 +33,12 @@ class _HomeScreenState extends State<HomeScreen>
       courses.add(CourseCard(
         courseID: data['data'][i]['CourseId'],
         courseTitle: data['data'][i]['CourseName'],
+        updateFavScreen: update,
       ));
     }
   }
+
+  void update() {}
 
   @override
   void initState() {
@@ -51,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen>
     _controller.dispose();
     super.dispose();
   }
-
 
 // I got these functions from here
 // source: https://github.com/MarcinusX/drawer_challenge/blob/master/lib/custom_drawer.dart
@@ -94,8 +96,6 @@ class _HomeScreenState extends State<HomeScreen>
       open();
     }
   }
-
-
 
   void selectDep(Dep dep) async {
     response = await Network.getCourses(dep);
@@ -149,30 +149,43 @@ class _HomeScreenState extends State<HomeScreen>
                         },
                         child: Icon(
                           Icons.search,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       )
                     ],
                   ),
-                  body: Column(
-                    children: <Widget>[
-                      Departments(
-                        selectDep: selectDep,
-                        selectedDep: selectedDep,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            if (courses.length == 0)
-                              return CircularProgressIndicator();
-                            return courses[index];
-                          },
-                          itemCount: courses.length,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
+                  body: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Departments(
+                          selectDep: selectDep,
+                          selectedDep: selectedDep,
                         ),
-                      ),
-                    ],
+                        SingleChildScrollView(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height - 250,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: 500,
+                                child: ListView.builder(
+                                  itemBuilder: (context, index) {
+                                    if (courses.length == 0)
+                                      return CircularProgressIndicator();
+                                    return courses[index];
+                                  },
+                                  itemCount: courses.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   bottomNavigationBar: CustmoBottomNavigationBar(
                     isHome: true,

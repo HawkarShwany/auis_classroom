@@ -28,7 +28,7 @@ class _CourseCardState extends State<CourseCard>
   void initState() {
     // TODO: implement initState
     super.initState();
-    heartIconColor = widget.isFav ? KBlue : KPrimaryColor;
+    heartIconColor = widget.isFav ? KBlue : KSecondaryColor;
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
@@ -58,11 +58,12 @@ class _CourseCardState extends State<CourseCard>
       // duration: Duration(milliseconds: 600),
       child: Container(
         decoration: BoxDecoration(
-          color: KSecondaryColor,
+          color: Colors.white,
+          boxShadow: kShadow,
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +78,6 @@ class _CourseCardState extends State<CourseCard>
                     style: TextStyle(
                       decoration: TextDecoration.none,
                       fontSize: 24,
-                      color: Colors.white,
                     ),
                   ),
                   SizedBox(
@@ -88,7 +88,6 @@ class _CourseCardState extends State<CourseCard>
                     style: TextStyle(
                       decoration: TextDecoration.none,
                       fontSize: 14,
-                      color: Colors.white,
                     ),
                   ),
                   SizedBox(
@@ -128,9 +127,10 @@ class _CourseCardState extends State<CourseCard>
               ),
               onTap: () {
                 setState(() {
-                  heartIconColor =
-                      (heartIconColor == KPrimaryColor) ? KBlue : KPrimaryColor;
-                  if (heartIconColor == KPrimaryColor) {
+                  heartIconColor = (heartIconColor == KSecondaryColor)
+                      ? KBlue
+                      : KSecondaryColor;
+                  if (heartIconColor == KSecondaryColor) {
                     Network.unmarkFav(
                         Provider.of<User>(context, listen: false).id,
                         widget.courseID);

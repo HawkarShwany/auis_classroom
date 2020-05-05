@@ -119,7 +119,7 @@ class _CourseScreenState extends State<CourseScreen>
                       bottom: TabBar(
                           isScrollable: true,
                           labelColor: KBlue,
-                          unselectedLabelColor: Colors.white54,
+                          unselectedLabelColor: Colors.black,
                           indicatorColor: KBlue,
                           indicatorSize: TabBarIndicatorSize.label,
                           dragStartBehavior: DragStartBehavior.start,

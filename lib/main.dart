@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => User(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -27,18 +28,18 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.merriweatherTextTheme(textTheme).copyWith(
             bodyText1:
                 GoogleFonts.playfairDisplay(textStyle: textTheme.bodyText1).copyWith(
-              color: Colors.white,
+              color: Colors.black,
             ),
             headline1: GoogleFonts.sourceSansPro(textStyle: textTheme.bodyText1)
                 .copyWith(
-              color: Colors.white,
+              color: Colors.black,
             ),
             bodyText2: GoogleFonts.sourceSansPro(textStyle: textTheme.bodyText1)
                 .copyWith(
-              color: Colors.white,
+              color: Colors.black,
             ),
             button: GoogleFonts.merriweather(textStyle: textTheme.bodyText1).copyWith(
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           buttonTheme: ButtonThemeData(

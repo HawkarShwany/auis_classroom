@@ -98,10 +98,10 @@ class _ReviewsState extends State<Reviews> {
                 onPressed: () {
                   rate();
                 },
-                color: KGreen,
+                color: KBlue,
                 child: Text(
                   'Rate',
-                  style: TextStyle(color: Colors.white),
+                  style: KPillTextStyle,
                 ),
               ),
               Expanded(

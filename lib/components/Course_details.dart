@@ -1,6 +1,5 @@
 import 'package:AUIS_classroom/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:AUIS_classroom/services/network.dart' as Network;
 
 class Details extends StatelessWidget {
   Details(
@@ -16,11 +15,13 @@ class Details extends StatelessWidget {
         ? 'none'
         : details['PrerequisiteCourseId'];
     return Container(
+      width: 500,
       margin: EdgeInsets.all(30),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       decoration: BoxDecoration(
-        color: KSecondaryColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
+        boxShadow: kShadow
       ),
       child: SingleChildScrollView(
         child: Column(

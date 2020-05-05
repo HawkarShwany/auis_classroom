@@ -150,23 +150,35 @@ class _HomeScreenState extends State<AdminHomeScreen>
                           ))
                     ],
                   ),
-                  body: Column(
-                    children: <Widget>[
-                      Departments(
-                        selectDep: selectDep,
-                        selectedDep: selectedDep,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return courses[index];
-                          },
-                          itemCount: courses.length,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
+                  body: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      children: <Widget>[
+                        Departments(
+                          selectDep: selectDep,
+                          selectedDep: selectedDep,
                         ),
-                      ),
-                    ],
+                        SingleChildScrollView(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height - 200,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: 500,
+                                child: ListView.builder(
+                                  itemBuilder: (context, index) {
+                                    return courses[index];
+                                  },
+                                  itemCount: courses.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   floatingActionButton: FloatingActionButton(
                     heroTag: 'AddCourse',

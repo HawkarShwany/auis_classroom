@@ -118,10 +118,11 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Container(
+        height: MediaQuery.of(context).size.height ,
+        child: SingleChildScrollView(
           child: Align(
             alignment: Alignment.center,
             child: Container(
@@ -134,7 +135,7 @@ class _LoginState extends State<Login> {
                   Flexible(
                     child: Text(
                       "AUIS Classroom",
-                      style: TextStyle(color: Colors.white, fontSize: 30),
+                      style: TextStyle( fontSize: 30),
                     ),
                   ),
 
@@ -143,10 +144,11 @@ class _LoginState extends State<Login> {
                     margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: KSecondaryColor,
+                      color: KPrimaryColor,
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
                       ),
+                      boxShadow: kShadow
                     ),
                     child: Form(
                       key: _loginformKey,
@@ -154,7 +156,7 @@ class _LoginState extends State<Login> {
                         children: <Widget>[
                           Text(
                             "Login",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: TextStyle( fontSize: 20),
                           ),
                           SizedBox(
                             height: 30,
@@ -278,9 +280,8 @@ class _LoginState extends State<Login> {
         context: context,
         title: 'Enter you email address to recieve and email',
         style: AlertStyle(
-          backgroundColor: KSecondaryColor,
+          backgroundColor: KPrimaryColor,
           titleStyle: TextStyle(
-            color: Colors.white,
             fontSize: 20,
           ),
         ),
@@ -306,7 +307,7 @@ class _LoginState extends State<Login> {
         buttons: [
           DialogButton(
             color: KBlue,
-              child: Text('send'),
+              child: Text('send', style: KPillTextStyle,),
               onPressed: () {
                 if (_resetFormKey.currentState.validate()) {
                   sendEmail(_resetEmail);
@@ -322,9 +323,8 @@ class _LoginState extends State<Login> {
         context: context,
         title: response['response'],
         style: AlertStyle(
-          backgroundColor: KSecondaryColor,
+          backgroundColor: KPrimaryColor,
           titleStyle: TextStyle(
-            color: Colors.white,
             fontSize: 20,
           ),
         ),
@@ -340,9 +340,8 @@ class _LoginState extends State<Login> {
         context: context,
         title: 'Admin Login',
         style: AlertStyle(
-          backgroundColor: KSecondaryColor,
+          backgroundColor: KPrimaryColor,
           titleStyle: TextStyle(
-            color: Colors.white,
             fontSize: 20,
           ),
         ),
@@ -403,7 +402,7 @@ class _LoginState extends State<Login> {
             color: KBlue,
               child: Text(
                 "login",
-                // style: KPillTextStyle,
+                style: KPillTextStyle,
               ),
               onPressed: () {
                 if (_adminformKey.currentState.validate()) {
@@ -418,9 +417,8 @@ class _LoginState extends State<Login> {
         context: context,
         title: "Register",
         style: AlertStyle(
-            backgroundColor: KSecondaryColor,
+            backgroundColor: KPrimaryColor,
             titleStyle: TextStyle(
-              color: Colors.white,
               fontSize: 20,
             )),
         content: Form(

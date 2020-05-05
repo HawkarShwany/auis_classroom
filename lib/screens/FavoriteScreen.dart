@@ -1,5 +1,4 @@
 import 'package:AUIS_classroom/components/CourseCard.dart';
-import 'package:AUIS_classroom/components/Course_lectures.dart';
 import 'package:AUIS_classroom/components/CustomBottomNavigationBar.dart';
 import 'package:AUIS_classroom/services/network.dart' as Network;
 import 'package:AUIS_classroom/services/user.dart';
@@ -20,9 +19,9 @@ class _FavoriteCourseScreenState extends State<FavoriteCourseScreen> {
   void updateScreen() async {
     var response =
         await Network.getFav(Provider.of<User>(context, listen: false).id);
-        convert(response);
+        
         setState(() {
-          print("set state" + courses.length.toString()+ courses[0].courseID);
+          convert(response);
         });
   }
 
@@ -48,11 +47,18 @@ class _FavoriteCourseScreenState extends State<FavoriteCourseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          return courses[index];
-        },
+      body: Align(
+        alignment: Alignment.center,
+              child: Container(
+          alignment: Alignment.center,
+          width: 500,
+          child: ListView.builder(
+            itemCount: courses.length,
+            itemBuilder: (context, index) {
+              return courses[index];
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: CustmoBottomNavigationBar(
         isHome: false,

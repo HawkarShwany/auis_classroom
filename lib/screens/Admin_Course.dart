@@ -33,40 +33,38 @@ class _CourseScreenState extends State<AdminCourseScreen> {
     // SystemChrome.setPreferredOrientations(
     //   [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]
     // );
-    return SafeArea(
-      child: DefaultTabController(
-        length: 5,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            automaticallyImplyLeading: true,
-            centerTitle: true,
-            title: Text(widget.courseId),
-            bottom: TabBar(
-                // isScrollable: true,
-                labelColor: KBlue,
-                unselectedLabelColor: Colors.white54,
-                indicatorColor: KBlue,
-                indicatorSize: TabBarIndicatorSize.label,
-                dragStartBehavior: DragStartBehavior.start,
-                tabs: [
-                  Icon(Icons.info_outline),
-                  Icon(Icons.ondemand_video),
-                  Icon(Icons.insert_drive_file),
-                  Icon(Icons.comment),
-                  Icon(Icons.pie_chart_outlined)
-                ]),
-          ),
-          body: Container(
-            child: TabBarView(
-              children: [
-                AdminDetails(widget.details, widget.courseId),
-                AdminLectures(widget.lectures, widget.courseId),
-                AdminFiles(widget.files, widget.courseId),
-                AdminReviews(widget.reviews, widget.courseId),
-                Insights(widget.insights, widget.courseId),
-              ],
-            ),
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+          centerTitle: true,
+          title: Text(widget.courseId),
+          bottom: TabBar(
+              // isScrollable: true,
+              labelColor: KBlue,
+              unselectedLabelColor: Colors.black,
+              indicatorColor: KBlue,
+              indicatorSize: TabBarIndicatorSize.label,
+              dragStartBehavior: DragStartBehavior.start,
+              tabs: [
+                Icon(Icons.info_outline),
+                Icon(Icons.ondemand_video),
+                Icon(Icons.insert_drive_file),
+                Icon(Icons.comment),
+                Icon(Icons.pie_chart_outlined)
+              ]),
+        ),
+        body: Container(
+          child: TabBarView(
+            children: [
+              AdminDetails(widget.details, widget.courseId),
+              AdminLectures(widget.lectures, widget.courseId),
+              AdminFiles(widget.files, widget.courseId),
+              AdminReviews(widget.reviews, widget.courseId),
+              Insights(widget.insights, widget.courseId),
+            ],
           ),
         ),
       ),
