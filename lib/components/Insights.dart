@@ -41,6 +41,19 @@ class _InsightsState extends State<Insights> {
     numOfComments = int.parse(data['numOfComments']);
     numOfReviews = int.parse(data['numOfReviews']);
 
+    if(numOfTypes == 0){
+      chartsections.add(
+        PieChartSectionData(titlePositionPercentageOffset: 1.0,
+          value: 1.0,
+          color: Colors.white,
+          radius: 55,
+          showTitle: true,
+          titleStyle: TextStyle(color: Colors.black),
+          title:'no files',
+        ),
+      );
+      return;
+    }
     for (var i = 0; i < numOfTypes; i++) {
       chartsections.add(
         PieChartSectionData(

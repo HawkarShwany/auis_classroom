@@ -148,9 +148,9 @@ class _FilesState extends State<Files> {
               ),
               title: Text(
                 "Sort",
-                style: TextStyle(color: Colors.white),
+                // style: TextStyle(color: Colors.white),
               ),
-            ),
+          ),
           ),
           Expanded(
             child: ListView.builder(
