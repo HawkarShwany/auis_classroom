@@ -15,4 +15,4 @@ here are some screenshots
 <img src="assets/images/review.jpg" width="200" height="auto">
 <img src="assets/images/fav.jpg" width="200" height="auto">
 <img src="assets/images/admin data.jpg" width="200" height="auto">
-<img src="assets/images/admin course lecture.jpg" width="200" height="auto">
+<img src="assets/images/course lecture admin.jpg" width="200" height="auto">
